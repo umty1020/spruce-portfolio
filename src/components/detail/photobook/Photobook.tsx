@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import type { PageFlip } from "page-flip";
 import type { PhotobookDetail, Project } from "@/content/projects";
 import { FillText, setFill } from "../FillText";
@@ -33,6 +33,7 @@ export default function Photobook({ project, prev, next }: Props) {
   const [scale, setScale] = useState(1);
   const [touched, setTouched] = useState(false);
   const [portrait, setPortrait] = useState(false);
+  const [flipping, setFlipping] = useState(false);
   const count = d.pages.length;
 
   useEffect(() => {
@@ -86,6 +87,8 @@ export default function Photobook({ project, prev, next }: Props) {
         setPage(e.data);
         setTouched(true);
       });
+      // 넘기는 중에는 닫힌 책의 3D 자세를 풀어 펼친 평면으로
+      pf.on("changeState", (e) => setFlipping(e.data !== "read"));
       flipRef.current = pf;
     });
 
@@ -162,6 +165,8 @@ export default function Photobook({ project, prev, next }: Props) {
   const spread = portrait || page === 0 ? String(page + 1) : page >= count - 1 ? String(count) : `${page + 1}–${page + 2}`;
   const right = portrait || page === 0 ? page + 1 : page + 2;
   const activeChapter = d.chapters.reduce((a, c, i) => (c.page <= right ? i : a), -1);
+  // 표지만 보일 때 "front", 뒤표지만 보일 때 "back" (한 쪽씩 보기·넘기는 중엔 없음)
+  const closed = portrait || flipping ? null : page === 0 ? "front" : page >= count - 1 ? "back" : null;
 
   return (
     <main className="photobook relative flex h-dvh justify-center overflow-hidden pt-[150px] max-md:pt-[120px]">
@@ -185,16 +190,39 @@ export default function Photobook({ project, prev, next }: Props) {
 
       {/* 가운데: 책 + 조작 */}
       <div className="flex shrink-0 flex-col" style={{ width: PAGE_W * (portrait ? 1 : 2) * scale }}>
-        <div className="relative" style={{ height: PAGE_H * scale }}>
-          <div ref={bookRef} className="photobook-book" />
-          {!touched && (
-            <Image
-              src="/icons/page-curl.svg"
-              alt=""
-              width={64}
-              height={64}
-              unoptimized
-              className="pointer-events-none absolute right-0 bottom-0"
+        {/* 닫힌 책(표지·뒤표지)은 비스듬히 세워 두께가 보이게, 넘기기 시작하면 펼친 평면으로 */}
+        <div
+          className="photobook-3d relative"
+          style={
+            {
+              height: PAGE_H * scale,
+              "--pw": `${PAGE_W * scale}px`,
+              "--ph": `${PAGE_H * scale}px`,
+            } as CSSProperties
+          }
+        >
+          <div className="photobook-tilt" data-closed={closed ?? undefined}>
+            <div className="photobook-shadow" aria-hidden />
+            <div ref={bookRef} className="photobook-book" />
+            <div className="photobook-edge photobook-edge-side" aria-hidden />
+            {!touched && (
+              <Image
+                src="/icons/page-curl.svg"
+                alt=""
+                width={64}
+                height={64}
+                unoptimized
+                className="pointer-events-none absolute right-0 bottom-0"
+              />
+            )}
+          </div>
+          {/* 닫힌 상태에선 기울어져 있어 드래그 좌표가 맞지 않으므로, 클릭하면 한 장 넘김 */}
+          {closed && (
+            <button
+              type="button"
+              aria-label={closed === "front" ? "책 펼치기" : "앞으로 넘기기"}
+              onClick={() => (closed === "front" ? flipRef.current?.flipNext() : flipRef.current?.flipPrev())}
+              className="absolute inset-0 cursor-pointer"
             />
           )}
         </div>

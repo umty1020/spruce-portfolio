@@ -23,3 +23,75 @@
   -webkit-user-drag: none;
   pointer-events: none;
 }
+
+/* ── 닫힌 책 3D (표지·뒤표지) ──────────────────────────
+   --pw: 한 쪽 폭, --ph: 높이. 책 전체(2쪽 폭) 안에서 표지는 오른쪽, 뒤표지는 왼쪽 절반 */
+.photobook-3d {
+  --thick: calc(var(--pw) * 0.06); /* 36쪽 두께 */
+  perspective: 1600px;
+}
+
+.photobook-tilt {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: transform;
+}
+/* 표지: 가운데로 옮기고 오른쪽 옆면(종이 단면)이 보이게 돌려 살짝 내려다봄 */
+.photobook-tilt[data-closed="front"] {
+  transform: translateX(calc(var(--pw) * -0.5)) rotateX(14deg) rotateY(-32deg);
+}
+/* 뒤표지: 반대로 */
+.photobook-tilt[data-closed="back"] {
+  transform: translateX(calc(var(--pw) * 0.5)) rotateX(14deg) rotateY(32deg);
+}
+
+/* 종이 단면: 표지 뒤로 두께만큼 세워 붙인 면 (닫혔을 때만 보임) */
+.photobook-edge {
+  position: absolute;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+.photobook-tilt[data-closed] .photobook-edge {
+  opacity: 1;
+}
+.photobook-edge-side {
+  top: 0;
+  width: var(--thick);
+  height: var(--ph);
+  background:
+    linear-gradient(90deg, rgb(0 0 0 / 0.12), transparent 30%, rgb(0 0 0 / 0.08)),
+    repeating-linear-gradient(90deg, #f4f4f2 0 1px, #dcdcd7 1px 2px);
+}
+.photobook-tilt[data-closed="front"] .photobook-edge-side {
+  left: calc(var(--pw) * 2);
+  transform-origin: left center;
+  transform: rotateY(90deg);
+}
+.photobook-tilt[data-closed="back"] .photobook-edge-side {
+  left: calc(var(--thick) * -1);
+  transform-origin: right center;
+  transform: rotateY(-90deg);
+}
+
+/* 바닥 그림자 */
+.photobook-shadow {
+  position: absolute;
+  top: calc(var(--ph) - 18px);
+  width: var(--pw);
+  height: 48px;
+  background: radial-gradient(ellipse at center, rgb(0 0 0 / 0.28), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+.photobook-tilt[data-closed="front"] .photobook-shadow {
+  left: var(--pw);
+  opacity: 1;
+}
+.photobook-tilt[data-closed="back"] .photobook-shadow {
+  left: 0;
+  opacity: 1;
+}
