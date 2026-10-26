@@ -84,3 +84,18 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
 }
+
+/* 커서 라벨 (OPEN PROJECT · DRAG): 위치는 JS가 transform으로, 표시는 opacity로 */
+.work-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  will-change: transform;
+}
+.work-cursor[data-visible] {
+  opacity: 1;
+}

@@ -1,0 +1,89 @@
+/* About 사원증 장면 (CSS 모듈은 경로의 * 때문에 깨져서 일반 CSS + 접두사 사용) */
+
+.about-scene {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  touch-action: none;
+}
+
+/* 디자인 좌표계(Figma 1440 × 900, x는 화면 가운데 기준). 화면이 낮으면 통째로 축소 */
+.about-stage {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 0;
+  height: 0;
+  transform-origin: 0 0;
+}
+
+.about-ring {
+  position: absolute;
+  top: 140px;
+  left: -300px;
+  width: 600px;
+  height: 600px;
+  pointer-events: none;
+}
+
+.about-rope {
+  position: absolute;
+  top: 0;
+  left: -720px;
+  width: 1440px;
+  height: 900px;
+  overflow: visible;
+  pointer-events: none;
+}
+
+/* 카드: 클립 고리(위 가운데, y 12)를 기준점으로 이동·회전 */
+.about-card {
+  position: absolute;
+  top: 0;
+  left: -150px;
+  width: 300px;
+  height: 420px;
+  transform-origin: 150px 12px;
+  perspective: 1200px;
+  cursor: grab;
+  will-change: transform;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.about-card:active {
+  cursor: grabbing;
+}
+@media (hover: hover) and (pointer: fine) {
+  .about-card,
+  .about-card:active {
+    cursor: none;
+  }
+}
+.about-card:focus-visible {
+  outline: 2px solid var(--border-strong);
+  outline-offset: 6px;
+  border-radius: 18px;
+}
+
+.about-card3d {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.about-face {
+  backface-visibility: hidden;
+}
+.about-back {
+  transform: rotateY(180deg);
+}
+
+/* 표면 빛: 기울기에 따라 이동 (--lx, --ly: %) */
+.about-light {
+  position: absolute;
+  inset: -50%;
+  background: radial-gradient(circle at 50% 50%, rgb(255 255 255 / 0.4), transparent 40%);
+  transform: translate(calc(var(--lx, 0) * 1%), calc(var(--ly, 0) * 1%));
+  pointer-events: none;
+}

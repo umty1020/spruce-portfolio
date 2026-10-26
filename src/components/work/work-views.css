@@ -1,20 +1,5 @@
 /* Work 보기 공통 (CSS 모듈은 경로의 * 때문에 깨져서 일반 CSS + 접두사 사용) */
 
-/* 커서 라벨: 위치는 JS가 transform으로, 표시는 opacity로 */
-.work-cursor {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 60;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.15s ease;
-  will-change: transform;
-}
-.work-cursor[data-visible] {
-  opacity: 1;
-}
-
 /* 정면 칸이 바뀔 때 다시 그려지는 글자: 살짝 떠오름 */
 .work-fade-in {
   animation: work-fade-up 0.35s ease-out both;
