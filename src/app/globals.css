@@ -31,6 +31,7 @@
 
   --font-sans: var(--font-pretendard), system-ui, sans-serif;
   --font-display: var(--font-line-seed), var(--font-pretendard), system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
 }
 
 /* Figma "WF" 텍스트 스타일 — lineHeight 100은 Figma 자동 줄높이(normal) */

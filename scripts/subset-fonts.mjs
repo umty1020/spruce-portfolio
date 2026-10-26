@@ -17,6 +17,8 @@ const FONTS = [
   ["Pretendard-Bold.otf", "Pretendard-Bold.woff2"],
   ["LINESeedSans_Bd.otf", "LINESeedSans-Bold.woff2"],
   ["LINESeedSans_XBd.otf", "LINESeedSans-ExtraBold.woff2"],
+  ["IBMPlexMono-Regular.woff2", "IBMPlexMono-Regular.woff2"],
+  ["IBMPlexMono-Medium.woff2", "IBMPlexMono-Medium.woff2"],
 ];
 
 async function collectFiles(dir) {

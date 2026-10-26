@@ -21,6 +21,15 @@ const lineSeed = localFont({
   variable: "--font-line-seed",
 });
 
+// Figma에서 번호("02")와 "OPEN PROJECT" 라벨에 쓰임
+const plexMono = localFont({
+  src: [
+    { path: "./fonts/IBMPlexMono-Regular.woff2", weight: "400" },
+    { path: "./fonts/IBMPlexMono-Medium.woff2", weight: "500" },
+  ],
+  variable: "--font-plex-mono",
+});
+
 export const metadata: Metadata = {
   title: "SPRUCE",
   description: "Taeyeong Um — Product Designer Portfolio",
@@ -28,7 +37,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="ko" className={`${pretendard.variable} ${lineSeed.variable} h-full`}>
+    <html lang="ko" className={`${pretendard.variable} ${lineSeed.variable} ${plexMono.variable} h-full`}>
       <body className="min-h-full flex flex-col">
         <SiteHeader />
         {children}
