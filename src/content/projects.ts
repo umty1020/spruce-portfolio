@@ -23,6 +23,17 @@ export type UiuxDetail = {
   result: string; // ⑦
 };
 
+// 상세 B · 영화 (Figma 5:52) — ① 작품 ② 본편 ③ 장면 ④ 크레딧
+export type FilmDetail = {
+  subtitle: string; // 제목 아래 (한글 제목 등)
+  synopsis: string;
+  badge?: string; // 수상 배지
+  keyVisual: { video?: string; webm?: string; poster?: string }; // 무음 루프 mp4 (5~10초)
+  youtubeId?: string; // 본편 — 재생 버튼을 눌러야 로드
+  stills: { label: string; src?: string }[]; // ③ 3장
+  credits: { label: string; lines: string[] }[]; // ④
+};
+
 export type Project = {
   slug: string; // URL: /work/{slug}
   no: string; // "01"
@@ -37,6 +48,7 @@ export type Project = {
   };
   cover?: string; // 대표 스크린샷 (LIST·SLIDER)
   uiux?: UiuxDetail; // kind === "uiux"일 때
+  film?: FilmDetail; // kind === "film"일 때
 };
 
 const uiuxPlaceholder = (title: string, device: "desktop" | "mobile"): UiuxDetail => ({
@@ -130,7 +142,24 @@ export const projects: Project[] = [
     kind: "film",
     summary: "[한 줄 소개]",
     roles: "[역할]",
+    award: "AI 영화 공모전 3등상 · 크리에이티브상",
     icon: { label: "영화 로고" },
+    film: {
+      subtitle: "판결",
+      synopsis:
+        "과거 부정한 판결로 무고한 가정을 파멸시켰던 판사가 의문의 납치극 속에서 아내와 수백 명의 승객 중 하나를 희생시켜야 하는 극단적 심판에 놓이며, 자신이 내린 판결의 무게를 비로소 깨닫게 되는 심리 스릴러.",
+      badge: "AI 영화 공모전 3등상 · 크리에이티브상",
+      keyVisual: {},
+      stills: [{ label: "스틸 1" }, { label: "스틸 2" }, { label: "스틸 3" }],
+      credits: [
+        { label: "제작 기간", lines: ["2026.08.14 – 08.25"] },
+        { label: "팀", lines: ["기획·연출 / AI 생성·엔지니어링 / 영상 편집·후반 작업 공동작업"] },
+        { label: "내 역할", lines: ["AI 이미지 생성, 종합 후반 작업"] },
+        { label: "내 툴", lines: ["After Effects, Higgsfield"] },
+        { label: "팀 툴", lines: ["After Effects, Higgsfield, Suno, ElevenLabs"] },
+        { label: "수상", lines: ["3등상 (크리에이티브상)"] },
+      ],
+    },
   },
   {
     slug: "icge",

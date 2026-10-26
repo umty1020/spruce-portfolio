@@ -14,13 +14,20 @@ const NEXT_ZONE = 700; // 트랙 끝 뒤로 "다음 프로젝트" 글자를 채�
 const PREV_ZONE = 500; // 맨 앞에서 위로 이만큼 굴리면 이전 프로젝트
 
 type Neighbor = { slug: string; title: string };
-type Props = { width: number; prev: Neighbor; next: Neighbor; dark?: boolean; children: ReactNode };
+type Props = {
+  width: number; // 트랙 길이 (디자인 단위)
+  nextAt: [number, number]; // 트랙 끝 "SCROLL DOWN TO NEXT PROJECT"와 다음 프로젝트 이름의 x (Figma)
+  prev: Neighbor;
+  next: Neighbor;
+  dark?: boolean;
+  children: ReactNode;
+};
 
 const ScrollLock = createContext<{ lock: () => void; unlock: () => void }>({ lock() {}, unlock() {} });
 /** 모달 등에서 페이지 스크롤을 잠글 때 */
 export const useScrollLock = () => useContext(ScrollLock);
 
-export default function DetailTrack({ width, prev, next, dark = false, children }: Props) {
+export default function DetailTrack({ width, nextAt, prev, next, dark = false, children }: Props) {
   const router = useRouter();
   const spacerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
@@ -124,10 +131,12 @@ export default function DetailTrack({ width, prev, next, dark = false, children 
             {children}
 
             {/* 트랙 끝: 계속 내리면 왼쪽부터 차오름 → 다음 프로젝트 (Figma 4:125 · 4:126) */}
-            <div className="detail-next" style={{ left: width - 580 }}>
+            <p className="detail-next" style={{ left: nextAt[0] }}>
               <FillText text="SCROLL DOWN TO NEXT PROJECT" fillRef={nextFillRef} />
-              <span className="font-display text-[17px] leading-normal font-bold text-text-primary">{next.title}</span>
-            </div>
+            </p>
+            <p className="detail-next-title" style={{ left: nextAt[1] }}>
+              {next.title}
+            </p>
           </div>
         </div>
 

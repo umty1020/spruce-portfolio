@@ -50,15 +50,20 @@
 .detail-next {
   position: absolute;
   top: 440px;
-  display: flex;
-  align-items: baseline;
-  gap: 0;
-  width: 580px;
-  justify-content: space-between;
   font-size: 15px;
   line-height: 1.6;
   letter-spacing: 0.6px;
   white-space: nowrap;
+}
+
+.detail-next-title {
+  position: absolute;
+  top: 440px;
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 700;
+  line-height: normal;
+  color: var(--text-primary);
 }
 
 /* 차오르는 글자: 회색 바탕 위에 진한 글자를 왼쪽부터 드러냄 */
@@ -100,6 +105,12 @@
 }
 .detail-dark .detail-fill-mask {
   color: var(--text-inverse);
+}
+.detail-dark .detail-next-title {
+  color: var(--text-inverse);
+}
+.detail-dark .detail-viewport {
+  background: var(--bg-dark);
 }
 
 /* 라이브 시연 확대 (Figma 4:128) */

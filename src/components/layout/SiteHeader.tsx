@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { getProject } from "@/content/projects";
 
 // Figma: Nav 2:34 (active = Work | About | Contact)
 const NAV = [
@@ -16,15 +17,20 @@ function isActive(pathname: string, href: string) {
   return pathname.startsWith(href);
 }
 
+// 어두운 배경 페이지(상세 B · 영화)에서는 글자색 반전 (Figma 5:53 · 5:54)
+function isDark(pathname: string) {
+  const slug = pathname.startsWith("/work/") ? pathname.slice(6) : "";
+  return getProject(slug)?.kind === "film";
+}
+
 export default function SiteHeader() {
   const pathname = usePathname();
+  const dark = isDark(pathname);
+  const [on, off] = dark ? ["text-text-inverse", "text-text-muted-inverse"] : ["text-text-primary", "text-text-muted"];
 
   return (
     <header className="pointer-events-none fixed inset-x-0 top-0 z-50">
-      <Link
-        href="/"
-        className="wf-logo pointer-events-auto absolute top-[28px] left-[32px] text-text-primary"
-      >
+      <Link href="/" className={`wf-logo pointer-events-auto absolute top-[28px] left-[32px] ${on}`}>
         SPRUCE
       </Link>
       <nav className="pointer-events-auto absolute top-[30px] right-[37px]">
@@ -36,7 +42,7 @@ export default function SiteHeader() {
                 <Link
                   href={href}
                   aria-current={active ? "page" : undefined}
-                  className={active ? "text-text-primary" : "text-text-muted"}
+                  className={active ? on : off}
                 >
                   {label}
                 </Link>

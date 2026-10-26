@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getProject, projects } from "@/content/projects";
 import UiuxDetail from "@/components/detail/uiux/UiuxDetail";
+import FilmDetail from "@/components/detail/film/FilmDetail";
 
 export function generateStaticParams() {
   return projects.map(({ slug }) => ({ slug }));
@@ -22,8 +23,11 @@ export default async function ProjectPage(props: PageProps<"/work/[slug]">) {
   if (project.kind === "uiux" && project.uiux) {
     return <UiuxDetail project={{ ...project, uiux: project.uiux }} />;
   }
+  if (project.kind === "film" && project.film) {
+    return <FilmDetail project={{ ...project, film: project.film }} />;
+  }
 
-  // 상세 B(영화)·C(포토북)는 다음 단계에서
+  // 상세 C(포토북)는 다음 단계에서
   return (
     <main className="flex min-h-dvh flex-col items-center justify-center gap-[6px]">
       <p className="wf-title">

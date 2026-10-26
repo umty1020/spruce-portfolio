@@ -2,6 +2,7 @@ import Image from "next/image";
 import type { Project, UiuxDetail as Detail } from "@/content/projects";
 import { getNeighbors } from "@/content/projects";
 import DetailTrack from "../DetailTrack";
+import { Box, InfoList, Label, Placeholder, TextBlock } from "../parts";
 import LiveDemo from "./LiveDemo";
 import SlideViewer from "./SlideViewer";
 
@@ -13,7 +14,7 @@ export default function UiuxDetail({ project }: { project: Project & { uiux: Det
   const { prev, next } = getNeighbors(project.slug);
 
   return (
-    <DetailTrack width={TRACK_WIDTH} prev={prev} next={next}>
+    <DetailTrack width={TRACK_WIDTH} nextAt={[5980, 6460]} prev={prev} next={next}>
       {/* ① 개요 */}
       <Label x={32}>① 개요</Label>
       <TextBlock x={32} y={420} title={project.title} body={d.overview} />
@@ -81,20 +82,7 @@ export default function UiuxDetail({ project }: { project: Project & { uiux: Det
 
       {/* ⑥ 정보 */}
       <Label x={5112}>⑥ 정보</Label>
-      <dl className="absolute top-[250px] left-[5112px] flex flex-col gap-[18px] text-[14px]">
-        {d.info.map(({ label, lines }) => (
-          <div key={label} className="flex gap-[16px]">
-            <dt className="w-[80px] leading-normal font-bold text-text-primary">{label}</dt>
-            <dd className="w-[304px] leading-[1.6] text-text-muted">
-              {lines.map((line) => (
-                <span key={line} className="block">
-                  {line}
-                </span>
-              ))}
-            </dd>
-          </div>
-        ))}
-      </dl>
+      <InfoList x={5112} y={250} items={d.info} />
 
       {/* ⑦ 결과 */}
       <Label x={5592}>⑦ 결과</Label>
@@ -114,31 +102,3 @@ function screenLayout(screens: Detail["screens"]) {
   });
 }
 
-function Label({ x, y = 200, children }: { x: number; y?: number; children: React.ReactNode }) {
-  return (
-    <p className="wf-mono absolute text-text-muted" style={{ left: x, top: y }}>
-      {children}
-    </p>
-  );
-}
-
-function TextBlock({ x, y, title, body }: { x: number; y: number; title: string; body: string }) {
-  return (
-    <div className="absolute flex w-[300px] flex-col gap-[10px]" style={{ left: x, top: y }}>
-      <p className="wf-title text-text-primary">{title}</p>
-      <p className="wf-body text-text-muted">{body}</p>
-    </div>
-  );
-}
-
-function Box({ x, y, w, h, className = "", children }: { x: number; y: number; w: number; h: number; className?: string; children?: React.ReactNode }) {
-  return (
-    <div className={`absolute overflow-hidden ${className}`} style={{ left: x, top: y, width: w, height: h }}>
-      {children}
-    </div>
-  );
-}
-
-function Placeholder({ children }: { children: React.ReactNode }) {
-  return <p className="wf-mono absolute inset-0 flex items-center justify-center text-text-muted">{children}</p>;
-}
