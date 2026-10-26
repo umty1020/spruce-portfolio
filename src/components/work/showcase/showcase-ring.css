@@ -103,39 +103,3 @@
   outline: 2px solid var(--border-strong);
   outline-offset: 4px;
 }
-
-/* 커서 라벨: 위치는 JS가 transform으로, 표시는 opacity로 */
-.showcase-cursor {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 60;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.15s ease;
-  will-change: transform;
-}
-.showcase-cursor[data-visible] {
-  opacity: 1;
-}
-
-/* 캡션: 정면 카드가 바뀔 때마다 다시 그려지며 살짝 떠오름 */
-.showcase-caption-in {
-  animation: showcase-caption-in 0.35s ease-out both;
-}
-@keyframes showcase-caption-in {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .showcase-caption-in {
-    animation-name: showcase-fade-in;
-  }
-  @keyframes showcase-fade-in {
-    from {
-      opacity: 0;
-    }
-  }
-}

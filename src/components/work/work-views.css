@@ -1,0 +1,89 @@
+/* Work 보기 공통 (CSS 모듈은 경로의 * 때문에 깨져서 일반 CSS + 접두사 사용) */
+
+/* 커서 라벨: 위치는 JS가 transform으로, 표시는 opacity로 */
+.work-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  will-change: transform;
+}
+.work-cursor[data-visible] {
+  opacity: 1;
+}
+
+/* 정면 칸이 바뀔 때 다시 그려지는 글자: 살짝 떠오름 */
+.work-fade-in {
+  animation: work-fade-up 0.35s ease-out both;
+}
+@keyframes work-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+@keyframes work-fade {
+  from {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .work-fade-in {
+    animation-name: work-fade;
+  }
+}
+
+/* LIST·SLIDER 카드 (Figma Placeholder 2:42, 360 × 360) */
+.work-card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 360px;
+  height: 360px;
+  margin: -180px 0 0 -180px;
+  cursor: pointer;
+  -webkit-user-drag: none;
+  will-change: transform;
+}
+
+.work-card-face,
+.work-card-active {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.work-card-face {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-default);
+  color: var(--text-muted);
+}
+
+/* 정면 칸: Figma의 강조 스타일로 크로스페이드 */
+.work-card-active {
+  background: var(--bg-panel-strong);
+  border: 2px solid var(--border-strong);
+  color: var(--text-primary);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.work-card[data-active] .work-card-active {
+  opacity: 1;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .work-card[data-active] {
+    cursor: none;
+  }
+}
+
+.work-card:focus-visible {
+  outline: 2px solid var(--border-strong);
+  outline-offset: 4px;
+}

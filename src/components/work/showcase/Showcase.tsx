@@ -4,7 +4,7 @@ import { useState } from "react";
 import { projects } from "@/content/projects";
 import { site } from "@/content/site";
 import ShowcaseRing from "./ShowcaseRing";
-import CursorLabel from "./CursorLabel";
+import CursorLabel from "../CursorLabel";
 
 // Figma 3:2 Work · SHOWCASE
 export default function Showcase() {
@@ -22,7 +22,7 @@ export default function Showcase() {
       <div
         key={project.slug}
         aria-live="polite"
-        className="showcase-caption-in pointer-events-none absolute bottom-[109px] left-1/2 flex -translate-x-1/2 flex-col items-center gap-[6px] whitespace-nowrap"
+        className="work-fade-in pointer-events-none absolute bottom-[109px] left-1/2 flex -translate-x-1/2 flex-col items-center gap-[6px] whitespace-nowrap"
       >
         <p className="wf-title text-text-primary">
           {project.no} — {project.title}

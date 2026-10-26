@@ -31,7 +31,7 @@ export default function CursorLabel({ visible, label = "OPEN PROJECT" }: { visib
   }, []);
 
   return (
-    <div ref={ref} className="showcase-cursor flex items-center gap-[8px]" data-visible={visible ? "" : undefined} aria-hidden>
+    <div ref={ref} className="work-cursor flex items-center gap-[8px]" data-visible={visible ? "" : undefined} aria-hidden>
       <span className="size-[10px] border-[1.5px] border-border-strong bg-bg-page" />
       <span className="bg-bg-dark px-[10px] py-[6px] font-mono text-[12px] leading-normal font-medium text-text-inverse">
         {label}
