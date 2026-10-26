@@ -34,6 +34,16 @@ export type FilmDetail = {
   credits: { label: string; lines: string[] }[]; // ④
 };
 
+// 상세 C · 포토북 (Figma 5:105) — 한 화면에 양면 펼침, 한 장씩 넘김
+export type PhotobookDetail = {
+  heading: string; // 왼쪽 설명 제목
+  subtitle: string;
+  description: string;
+  meta: string[]; // 형식 · 기간 · 툴
+  pages: string[]; // PDF → 페이지별 WebP (3:4)
+  chapters: { label: string; page: number }[]; // 챕터 버튼 → 시작 쪽(1부터)
+};
+
 export type Project = {
   slug: string; // URL: /work/{slug}
   no: string; // "01"
@@ -49,6 +59,7 @@ export type Project = {
   cover?: string; // 대표 스크린샷 (LIST·SLIDER)
   uiux?: UiuxDetail; // kind === "uiux"일 때
   film?: FilmDetail; // kind === "film"일 때
+  photobook?: PhotobookDetail; // kind === "photobook"일 때
 };
 
 const uiuxPlaceholder = (title: string, device: "desktop" | "mobile"): UiuxDetail => ({
@@ -169,6 +180,19 @@ export const projects: Project[] = [
     summary: "[한 줄 소개]",
     roles: "[역할]",
     icon: { label: "책 로고" },
+    photobook: {
+      heading: "ICGE 55th Photobook",
+      subtitle: "인하고전기타회 55기 아카이브 포토북",
+      description:
+        "모든 기록이 휘발성 데이터로 남는 시대에, 손에 잡히는 실물로 동아리 활동의 가치를 보존하고자 기획했다. 55기 집행부의 임기 마감을 기념해 정기연주회와 일상의 순간을 모노크롬 톤, 악보, QR 코드 기반 미디어 연동으로 엮은 헌정집.",
+      meta: ["편집 디자인 · 36p", "2026.04 – 06", "InDesign · Photoshop · Illustrator"],
+      pages: Array.from({ length: 36 }, (_, i) => `/work/icge/pages/${String(i + 1).padStart(2, "0")}.webp`),
+      chapters: [
+        { label: "Introduction", page: 4 },
+        { label: "Rendition", page: 18 },
+        { label: "Soulace", page: 28 },
+      ],
+    },
   },
 ];
 

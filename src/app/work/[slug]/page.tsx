@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getProject, projects } from "@/content/projects";
+import { getNeighbors, getProject, projects } from "@/content/projects";
 import UiuxDetail from "@/components/detail/uiux/UiuxDetail";
 import FilmDetail from "@/components/detail/film/FilmDetail";
+import Photobook from "@/components/detail/photobook/Photobook";
 
 export function generateStaticParams() {
   return projects.map(({ slug }) => ({ slug }));
@@ -26,8 +27,12 @@ export default async function ProjectPage(props: PageProps<"/work/[slug]">) {
   if (project.kind === "film" && project.film) {
     return <FilmDetail project={{ ...project, film: project.film }} />;
   }
+  if (project.kind === "photobook" && project.photobook) {
+    const { prev, next } = getNeighbors(project.slug);
+    return <Photobook project={{ ...project, photobook: project.photobook }} prev={prev} next={next} />;
+  }
 
-  // 상세 C(포토북)는 다음 단계에서
+  // 내용이 아직 없는 프로젝트
   return (
     <main className="flex min-h-dvh flex-col items-center justify-center gap-[6px]">
       <p className="wf-title">

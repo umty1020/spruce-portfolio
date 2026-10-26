@@ -3,6 +3,7 @@
 import Lenis from "lenis";
 import { useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useRef, type ReactNode } from "react";
+import { FillText, setFill } from "./FillText";
 import "./detail.css";
 
 // 상세 페이지 공통 가로 트랙 (상세 A · B)
@@ -55,13 +56,6 @@ export default function DetailTrack({ width, nextAt, prev, next, dark = false, c
       offsetY = Math.max(0, (vh - DESIGN_H * scale) / 2);
       maxX = Math.max(0, width * scale - vw);
       spacer.style.height = `${maxX + NEXT_ZONE + vh}px`;
-    };
-
-    const setFill = (el: HTMLElement | null, f: number) => {
-      if (!el) return;
-      // 바깥은 왼쪽에서 드러나고 안쪽 글자는 제자리 → 글자가 왼쪽부터 차오름 (transform만)
-      el.style.transform = `translateX(${(f - 1) * 100}%)`;
-      (el.firstElementChild as HTMLElement).style.transform = `translateX(${(1 - f) * 100}%)`;
     };
 
     const update = (y: number) => {
@@ -151,14 +145,3 @@ export default function DetailTrack({ width, nextAt, prev, next, dark = false, c
   );
 }
 
-// 회색 글자 위에 진한 글자를 겹쳐 두고, 진한 쪽을 transform으로 왼쪽부터 드러냄
-function FillText({ text, fillRef }: { text: string; fillRef: React.Ref<HTMLSpanElement> }) {
-  return (
-    <span className="detail-fill">
-      <span className="detail-fill-base">{text}</span>
-      <span className="detail-fill-mask" ref={fillRef} aria-hidden>
-        <span>{text}</span>
-      </span>
-    </span>
-  );
-}
