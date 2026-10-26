@@ -1,0 +1,88 @@
+/* 3D 링 (CSS 모듈은 경로의 * 때문에 깨져서 일반 CSS + 접두사 사용). 값은 ShowcaseRing.tsx의 상수와 맞춘다 (TILE 240 · RADIUS 380 · PERSPECTIVE 1100) */
+.showcase-stage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 40px; /* Figma: 타일 중심 y = 470 / 900 */
+  perspective: 1100px;
+  overflow: hidden;
+}
+
+.showcase-ring {
+  --ring: 0;
+  position: relative;
+  width: 240px;
+  height: 240px;
+  transform-style: preserve-3d;
+  transform: translateZ(-380px) rotateY(0deg);
+  will-change: transform;
+}
+
+.showcase-tile {
+  /* --a: 링 위 고정 각도, --w: 화면 기준 현재 각도 (0 = 정면) */
+  --w: calc(var(--a) * 1deg + var(--ring) * 1deg);
+  position: absolute;
+  inset: 0;
+  transform: rotateY(calc(var(--a) * 1deg)) translateZ(380px);
+  backface-visibility: hidden;
+  border-radius: 52.8px;
+  overflow: hidden;
+  /* Figma: 정면 1 · 36° 0.7 · 72° 0.45 */
+  opacity: clamp(0, 0.2955 + 0.5 * cos(var(--w)) + max(0, cos(var(--w)) - 0.809) * 1.07, 1);
+}
+
+
+/* 층: 바탕(face) → 정면 바탕(active) → 하이라이트(shine) → 글자(label) */
+.showcase-face,
+.showcase-active,
+.showcase-label {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.showcase-face {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-default);
+}
+
+/* 정면에 가까울수록 Figma의 정면 타일 스타일이 드러남 (±18° 안에서 크로스페이드) */
+.showcase-active,
+.showcase-label-active {
+  opacity: clamp(0, (cos(var(--w)) - 0.951) / 0.049, 1);
+}
+
+.showcase-active {
+  background: var(--bg-panel-strong);
+  border: 2px solid var(--border-strong);
+}
+
+/* 표면 하이라이트: 각도에 따라 빛줄기가 반대쪽으로 흐름 */
+.showcase-shine {
+  position: absolute;
+  inset: 0 -50%;
+  background: linear-gradient(
+    100deg,
+    transparent 38%,
+    rgb(255 255 255 / 0.3) 50%,
+    transparent 62%
+  );
+  transform: translateX(calc(sin(var(--w)) * -55% - 15%));
+  pointer-events: none;
+}
+
+.showcase-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  white-space: nowrap;
+  color: var(--text-muted);
+}
+
+.showcase-label-active {
+  color: var(--text-primary);
+}
