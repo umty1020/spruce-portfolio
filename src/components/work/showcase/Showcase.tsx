@@ -14,7 +14,7 @@ export default function Showcase() {
 
   return (
     <>
-      <p className="wf-body absolute top-[88px] right-[32px] w-[360px] text-text-muted">{site.intro}</p>
+      <p className="wf-body absolute top-[88px] right-[32px] w-[360px] text-text-muted max-md:hidden">{site.intro}</p>
 
       <ShowcaseRing projects={projects} onFrontChange={setFront} onFrontHover={setHovering} />
 

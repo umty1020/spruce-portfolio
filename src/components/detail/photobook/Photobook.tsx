@@ -32,6 +32,7 @@ export default function Photobook({ project, prev, next }: Props) {
   const [page, setPage] = useState(0);
   const [scale, setScale] = useState(1);
   const [touched, setTouched] = useState(false);
+  const [portrait, setPortrait] = useState(false);
   const count = d.pages.length;
 
   useEffect(() => {
@@ -42,8 +43,11 @@ export default function Photobook({ project, prev, next }: Props) {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     // 화면에 맞는 책 크기 (책을 transform으로 줄이면 드래그 좌표가 어긋나서 크기 자체를 정함)
-    const s = Math.min(1, (window.innerHeight - 150 - 120) / PAGE_H, (window.innerWidth - 32) / (PAGE_W * 2));
+    // 좁은 화면은 한 쪽씩 크게 (portrait)
+    const narrow = window.innerWidth < 768;
+    const s = Math.min(1, (window.innerHeight - 150 - 120) / PAGE_H, (window.innerWidth - 32) / (PAGE_W * (narrow ? 1 : 2)));
     setScale(s);
+    setPortrait(narrow);
 
     // page-flip이 페이지 DOM을 옮기므로 React 밖에서 만든다
     const root = document.createElement("div");
@@ -72,7 +76,7 @@ export default function Photobook({ project, prev, next }: Props) {
         height: Math.round(PAGE_H * s),
         size: "fixed",
         showCover: true,
-        usePortrait: false,
+        usePortrait: narrow,
         flippingTime: reduce ? 1 : 800,
         maxShadowOpacity: 0.4,
         mobileScrollSupport: false,
@@ -94,7 +98,7 @@ export default function Photobook({ project, prev, next }: Props) {
     let leaving = false;
 
     const atStart = () => (pf?.getCurrentPageIndex() ?? 0) === 0;
-    const atEnd = () => (pf?.getCurrentPageIndex() ?? 0) >= count - 2;
+    const atEnd = () => (pf?.getCurrentPageIndex() ?? 0) >= count - (narrow ? 1 : 2);
 
     const edge = (dir: number, delta: number) => {
       edgeAcc += delta;
@@ -154,8 +158,9 @@ export default function Photobook({ project, prev, next }: Props) {
   }, [d.pages, count, next.slug, prev.slug, router]);
 
   // 펼침면 표기: 표지 "1", 그다음부터 "2–3", "4–5" …
-  const spread = page === 0 ? "1" : page >= count - 1 ? String(count) : `${page + 1}–${page + 2}`;
-  const right = page === 0 ? 1 : page + 2;
+  // 한 쪽씩 보기(좁은 화면)는 "n"
+  const spread = portrait || page === 0 ? String(page + 1) : page >= count - 1 ? String(count) : `${page + 1}–${page + 2}`;
+  const right = portrait || page === 0 ? page + 1 : page + 2;
   const activeChapter = d.chapters.reduce((a, c, i) => (c.page <= right ? i : a), -1);
 
   return (
@@ -179,7 +184,7 @@ export default function Photobook({ project, prev, next }: Props) {
       </div>
 
       {/* 가운데: 책 + 조작 */}
-      <div className="flex shrink-0 flex-col" style={{ width: PAGE_W * 2 * scale }}>
+      <div className="flex shrink-0 flex-col" style={{ width: PAGE_W * (portrait ? 1 : 2) * scale }}>
         <div className="relative" style={{ height: PAGE_H * scale }}>
           <div ref={bookRef} className="photobook-book" />
           {!touched && (

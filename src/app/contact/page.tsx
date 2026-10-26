@@ -13,8 +13,8 @@ export default function ContactPage() {
         {/* Figma WF/Heading XL 64px — 좁은 화면에서는 줄임 */}
         <a
           href={`mailto:${contact.email}`}
-          className="wf-heading-xl break-all text-text-primary"
-          style={{ fontSize: "clamp(28px, 4.45vw, 64px)" }}
+          className="wf-heading-xl break-words text-text-primary"
+          style={{ fontSize: "clamp(22px, 4.45vw, 64px)" }}
         >
           {contact.email}
         </a>

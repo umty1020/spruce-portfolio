@@ -163,3 +163,10 @@ html.lenis body {
 .lenis.lenis-stopped {
   overflow: clip;
 }
+
+/* 좁은 화면: 머리글 가운데 안내는 로고·메뉴와 겹쳐서 숨김 */
+@media (max-width: 900px) {
+  .detail-prev {
+    display: none;
+  }
+}
