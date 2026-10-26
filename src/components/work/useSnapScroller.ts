@@ -21,6 +21,8 @@ const TAP_SLOP = 8; // 이만큼(px) 넘게 끌면 클릭으로 보지 않음
 
 export function useSnapScroller({ count, wheelPerPx, touchPerPx, onFrame, onIndexChange }: Options) {
   const goToRef = useRef<(index: number) => void>(() => {});
+  const dragByRef = useRef<(delta: number) => void>(() => {});
+  const releaseRef = useRef<() => void>(() => {});
   const indexRef = useRef(-1); // 첫 프레임에서 onIndexChange(0)이 한 번 불리도록
   const draggedRef = useRef(false);
 
@@ -89,6 +91,18 @@ export function useSnapScroller({ count, wheelPerPx, touchPerPx, onFrame, onInde
       const diff = ((((index - target) % count) + count * 1.5) % count) - count / 2;
       target = Math.round(target + diff);
       kick();
+    };
+
+    // 마우스로 끄는 동안: 스냅하지 않고 따라오다가, 놓으면 스냅
+    dragByRef.current = (delta: number) => {
+      if (reduce || delta === 0) return;
+      clearTimeout(snapTimer);
+      target += delta;
+      lastDir = Math.sign(delta);
+      kick();
+    };
+    releaseRef.current = () => {
+      if (!reduce) snap();
     };
 
     const moveBy = (delta: number) => {
@@ -171,6 +185,9 @@ export function useSnapScroller({ count, wheelPerPx, touchPerPx, onFrame, onInde
   return {
     /** 칸 하나를 정면으로 (가까운 방향) */
     goTo: (index: number) => goToRef.current(index),
+    /** 마우스 드래그로 칸 단위 이동 (놓을 때 release) */
+    dragBy: (delta: number) => dragByRef.current(delta),
+    release: () => releaseRef.current(),
     /** 지금 정면 칸 */
     index: () => Math.max(0, indexRef.current),
     /** 방금 터치를 끌었는지 (끌었으면 true를 한 번 돌려주고 초기화 → 클릭 무시용) */

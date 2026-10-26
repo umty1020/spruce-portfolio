@@ -10,13 +10,15 @@
   overflow: hidden;
 }
 
+/* --ring: 회전 각도(도), --tilt: 위아래 기울기 정도 0~1 (마우스 드래그) */
 .showcase-ring {
   --ring: 0;
+  --tilt: 0;
   position: relative;
   width: 240px;
   height: 240px;
   transform-style: preserve-3d;
-  transform: translateZ(-380px) rotateY(0deg);
+  transform: translateZ(-380px) rotateX(0deg) rotateY(0deg);
   will-change: transform;
 }
 
@@ -26,11 +28,28 @@
   position: absolute;
   inset: 0;
   transform: rotateY(calc(var(--a) * 1deg)) translateZ(380px);
-  backface-visibility: hidden;
+  transform-style: preserve-3d;
+}
+
+/* 앞면: 원통 바깥을 보는 면 */
+.showcase-front,
+.showcase-back {
+  position: absolute;
+  inset: 0;
   border-radius: 52.8px;
   overflow: hidden;
+  backface-visibility: hidden;
+}
+.showcase-front {
   /* Figma: 정면 1 · 36° 0.7 · 72° 0.45 */
   opacity: clamp(0, 0.2955 + 0.5 * cos(var(--w)) + max(0, cos(var(--w)) - 0.809) * 1.07, 1);
+}
+
+/* 뒷면: 링을 기울였을 때만 원통 안쪽(뒤편 카드)이 보이도록 기울기만큼 드러남 */
+.showcase-back {
+  transform: rotateY(180deg);
+  opacity: calc(var(--tilt) * 0.85);
+  pointer-events: none;
 }
 
 
@@ -102,4 +121,25 @@
 .showcase-tile:focus-visible {
   outline: 2px solid var(--border-strong);
   outline-offset: 4px;
+}
+
+/* 마우스로 끌어서 링 기울이기·돌리기 */
+@media (hover: hover) and (pointer: fine) {
+  .showcase-stage {
+    cursor: grab;
+  }
+  .showcase-stage[data-dragging],
+  .showcase-stage[data-dragging] .showcase-tile {
+    cursor: grabbing;
+  }
+}
+
+/* 끄는 동안 아래 캡션·안내는 카드와 겹치지 않게 잠깐 흐리게 */
+.showcase-stage ~ [aria-live],
+.showcase-stage ~ .wf-mono {
+  transition: opacity 0.25s ease;
+}
+.showcase-stage[data-dragging] ~ [aria-live],
+.showcase-stage[data-dragging] ~ .wf-mono {
+  opacity: 0;
 }
