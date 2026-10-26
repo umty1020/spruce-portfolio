@@ -1,24 +1,27 @@
-/* 3D 링 (CSS 모듈은 경로의 * 때문에 깨져서 일반 CSS + 접두사 사용). 값은 ShowcaseRing.tsx의 상수와 맞춘다 (TILE 240 · RADIUS 380 · PERSPECTIVE 1100) */
+/* 3D 링 (CSS 모듈은 경로의 * 때문에 깨져서 일반 CSS + 접두사 사용)
+   비율은 레퍼런스(AVEA SHOWCASE) 실측: 반지름 ≈ 화면 폭 35.5%, 카드 ≈ 13%, 원근 ≈ 119%
+   → 정면 카드가 뒤편 카드보다 약 1.85배 크게 보이고, 카드 사이가 넓게 벌어짐 */
 .showcase-stage {
+  --card: clamp(150px, 13.15vw, 260px);
+  --radius: clamp(300px, 35.5vw, 700px);
   position: absolute;
   inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   padding-top: 40px; /* Figma: 타일 중심 y = 470 / 900 */
-  perspective: 1100px;
+  perspective: clamp(1000px, 119vw, 2400px);
   overflow: hidden;
 }
 
-/* --ring: 회전 각도(도), --tilt: 위아래 기울기 정도 0~1 (마우스 드래그) */
+/* --ring: 회전 각도(도). 링 중심은 화면 깊이 0에 두고 회전·기울기만 */
 .showcase-ring {
   --ring: 0;
-  --tilt: 0;
   position: relative;
-  width: 240px;
-  height: 240px;
+  width: var(--card);
+  height: var(--card);
   transform-style: preserve-3d;
-  transform: translateZ(-380px) rotateX(0deg) rotateY(0deg);
+  transform: rotateX(0deg) rotateY(0deg);
   will-change: transform;
 }
 
@@ -27,28 +30,21 @@
   --w: calc(var(--a) * 1deg + var(--ring) * 1deg);
   position: absolute;
   inset: 0;
-  transform: rotateY(calc(var(--a) * 1deg)) translateZ(380px);
+  transform: rotateY(calc(var(--a) * 1deg)) translateZ(var(--radius));
   transform-style: preserve-3d;
 }
 
-/* 앞면: 원통 바깥을 보는 면 */
+/* 앞면: 원통 바깥을 보는 면 · 뒷면: 원통 안쪽에서 보이는 면 (레퍼런스처럼 뒤편 카드도 항상 보임) */
 .showcase-front,
 .showcase-back {
   position: absolute;
   inset: 0;
-  border-radius: 52.8px;
+  border-radius: 22%;
   overflow: hidden;
   backface-visibility: hidden;
 }
-.showcase-front {
-  /* Figma: 정면 1 · 36° 0.7 · 72° 0.45 */
-  opacity: clamp(0, 0.2955 + 0.5 * cos(var(--w)) + max(0, cos(var(--w)) - 0.809) * 1.07, 1);
-}
-
-/* 뒷면: 링을 기울였을 때만 원통 안쪽(뒤편 카드)이 보이도록 기울기만큼 드러남 */
 .showcase-back {
   transform: rotateY(180deg);
-  opacity: calc(var(--tilt) * 0.85);
   pointer-events: none;
 }
 

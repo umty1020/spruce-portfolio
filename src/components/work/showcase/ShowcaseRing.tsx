@@ -7,13 +7,13 @@ import type { Project } from "@/content/projects";
 import { useSnapScroller } from "../useSnapScroller";
 import "./showcase-ring.css";
 
-const COPIES = 2; // 프로젝트 5개 × 2 = 타일 10장
-const RADIUS = 380;
+const COPIES = 2; // 프로젝트 5개 × 2 = 타일 10장 (36° 간격)
+// 크기(카드·반지름·원근)는 showcase-ring.css에서 화면 폭 비례로
 const WHEEL_DEG_PER_PX = 0.12;
 const TOUCH_DEG_PER_PX = 0.3;
 
 // 마우스 드래그: 위아래 → 링을 기울여 원통의 아랫면·윗면을 보여줌, 좌우 → 링 회전
-const TILT_MAX = 35; // 최대 기울기(도)
+const TILT_MAX = 28; // 최대 기울기(도) — 원통이 커져서 이보다 크면 화면 밖으로 나감
 const TILT_PER_PX = 0.18; // 드래그 1px당 기울기(도)
 const DRAG_DEG_PER_PX = 0.25; // 좌우 드래그 1px당 회전(도)
 const DRAG_SLOP = 4; // 이만큼(px) 움직여야 드래그로 봄 (그 전은 클릭)
@@ -42,9 +42,8 @@ export default function ShowcaseRing({ projects, onFrontChange, onFrontHover }: 
   const apply = () => {
     const ring = ringRef.current;
     if (!ring) return;
-    ring.style.transform = `translateZ(-${RADIUS}px) rotateX(${tiltRef.current}deg) rotateY(${degRef.current}deg)`;
+    ring.style.transform = `rotateX(${tiltRef.current}deg) rotateY(${degRef.current}deg)`;
     ring.style.setProperty("--ring", String(degRef.current));
-    ring.style.setProperty("--tilt", Math.min(Math.abs(tiltRef.current) / TILT_MAX, 1).toFixed(3));
   };
 
   // 타일 i는 -i·step 에 놓여 있으므로, 위치 pos(칸)일 때 링 각도 = pos·step 이면 타일 pos가 정면
@@ -212,7 +211,7 @@ export default function ShowcaseRing({ projects, onFrontChange, onFrontHover }: 
                   </>
                 )}
               </div>
-              {/* 원통 안쪽에서 보이는 면 (기울였을 때 뒤편 카드) */}
+              {/* 원통 안쪽에서 보이는 면 (뒤편 카드) */}
               <div className="showcase-back" aria-hidden>
                 <div className="showcase-face" />
                 {icon || <div className="showcase-label">{label}</div>}
