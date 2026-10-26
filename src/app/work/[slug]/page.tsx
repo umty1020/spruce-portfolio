@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getProject, projects } from "@/content/projects";
+import UiuxDetail from "@/components/detail/uiux/UiuxDetail";
 
 export function generateStaticParams() {
   return projects.map(({ slug }) => ({ slug }));
@@ -13,12 +14,16 @@ export async function generateMetadata(props: PageProps<"/work/[slug]">): Promis
   return { title: project ? `${project.title} — SPRUCE` : "SPRUCE" };
 }
 
-// 상세 페이지 자리 (A·B·C 구성은 이후 단계에서 채움)
 export default async function ProjectPage(props: PageProps<"/work/[slug]">) {
   const { slug } = await props.params;
   const project = getProject(slug);
   if (!project) notFound();
 
+  if (project.kind === "uiux" && project.uiux) {
+    return <UiuxDetail project={{ ...project, uiux: project.uiux }} />;
+  }
+
+  // 상세 B(영화)·C(포토북)는 다음 단계에서
   return (
     <main className="flex min-h-dvh flex-col items-center justify-center gap-[6px]">
       <p className="wf-title">

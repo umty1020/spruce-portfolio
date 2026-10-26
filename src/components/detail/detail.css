@@ -1,0 +1,154 @@
+/* 상세 페이지 가로 트랙 (CSS 모듈은 경로의 * 때문에 깨져서 일반 CSS + 접두사 사용) */
+
+.detail-spacer {
+  position: relative;
+}
+
+.detail-viewport {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+}
+
+/* 디자인 단위(높이 900) 트랙. 이동·축소는 JS가 transform 하나로 */
+.detail-track {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 900px;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+
+.detail-progress {
+  position: fixed;
+  bottom: 33px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: normal;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+
+/* 머리글 가운데 (Figma 4:48) */
+.detail-prev {
+  position: fixed;
+  top: 34px;
+  left: 50%;
+  z-index: 40;
+  transform: translateX(-50%);
+  font-size: 13px;
+  line-height: 1.5;
+  letter-spacing: 0.52px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.detail-next {
+  position: absolute;
+  top: 440px;
+  display: flex;
+  align-items: baseline;
+  gap: 0;
+  width: 580px;
+  justify-content: space-between;
+  font-size: 15px;
+  line-height: 1.6;
+  letter-spacing: 0.6px;
+  white-space: nowrap;
+}
+
+/* 차오르는 글자: 회색 바탕 위에 진한 글자를 왼쪽부터 드러냄 */
+.detail-fill {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+}
+.detail-fill-base {
+  color: var(--border-default);
+}
+.detail-fill-mask {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  color: var(--text-primary);
+  transform: translateX(-100%);
+  will-change: transform;
+}
+.detail-fill-mask > span {
+  display: block;
+  transform: translateX(100%);
+  will-change: transform;
+}
+.detail-prev .detail-fill-base {
+  color: var(--text-muted);
+}
+
+/* 어두운 상세 (영화) */
+.detail-dark {
+  background: var(--bg-dark);
+  color: var(--text-inverse);
+}
+.detail-dark .detail-fill-base,
+.detail-dark .detail-progress,
+.detail-dark .detail-prev .detail-fill-base {
+  color: var(--text-muted-inverse);
+}
+.detail-dark .detail-fill-mask {
+  color: var(--text-inverse);
+}
+
+/* 라이브 시연 확대 (Figma 4:128) */
+.demo-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  animation: demo-fade 0.25s ease-out both;
+}
+.demo-dim {
+  position: absolute;
+  inset: 0;
+  background: var(--bg-dark);
+  opacity: 0.72;
+}
+.demo-frame {
+  position: absolute;
+  top: 120px;
+  left: 50%;
+  margin-left: calc(var(--frame-w) / -2);
+  width: var(--frame-w);
+  height: var(--frame-h);
+  overflow: hidden;
+  background: var(--bg-page);
+  animation: demo-pop 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  will-change: transform;
+}
+@keyframes demo-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes demo-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .demo-frame {
+    animation-name: demo-fade;
+  }
+}
+
+/* Lenis: 필요한 규칙만 (기본 CSS의 iframe 클릭 막기는 시연과 충돌해서 제외) */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-stopped {
+  overflow: clip;
+}
