@@ -15,10 +15,12 @@ const ROPE = 10;
 const ANCHOR_Y = -6;
 const ROPE_LEN = 290; // 고정점 → 클립 고리 (Figma: 줄 250 + 클립 36, 카드 위 280)
 const CARD_LEN = 396; // 클립 고리(카드 y 12) → 카드 아래(카드 y 408)
-const GRAVITY = 2400;
+const GRAVITY = 6000; // 한 번 흔들리는 데 약 1.8초 (실제 목걸이 줄 정도의 무게감)
 const SUBSTEP = 1 / 240;
 const ITERATIONS = 14;
-const AIR = 0.9965; // 스텝당 속도 유지율 (1초에 약 43%)
+const AIR = 0.9925; // 스텝당 속도 유지율 (1초에 약 16%) → 2~3번 흔들리고 멈춤
+const DRAG_GAIN = 0.18; // 끌 때 스텝마다 포인터 쪽으로 따라가는 비율 (작을수록 묵직하게 늦게 따라옴)
+const MAX_SPEED = 1200; // 끌기·던지기 속도 상한(px/s) — 세게 휘둘러도 과하게 날아가지 않게
 const RING_CENTER_Y = 440;
 const TILT = 10; // 커서 기울기 최대(도)
 
@@ -69,12 +71,13 @@ export default function BadgeScene() {
       y[i] = ANCHOR_Y + seg * i;
       inv[i] = i === 0 ? 0 : 1;
     }
-    inv[A] = 1 / 6;
-    inv[B] = 1 / 6;
+    // 카드는 줄보다 훨씬 무거움 → 줄이 카드에 끌려다니지 않음
+    inv[A] = 1 / 12;
+    inv[B] = 1 / 12;
     x[B] = 0;
     y[B] = y[A] + CARD_LEN;
     // 처음엔 살짝 비스듬히 매달려 있다가 흔들리며 자리 잡음
-    if (!reduce) x[B] = 70;
+    if (!reduce) x[B] = 24;
     px.set(x);
     py.set(y);
 
@@ -114,29 +117,42 @@ export default function BadgeScene() {
       y[j] -= dy * k * inv[j];
     };
 
+    const maxStep = MAX_SPEED * SUBSTEP; // 스텝당 최대 이동(px)
     const step = (dt: number) => {
       for (let i = 1; i < count; i++) {
-        const vx = (x[i] - px[i]) * AIR;
-        const vy = (y[i] - py[i]) * AIR;
+        let vx = (x[i] - px[i]) * AIR;
+        let vy = (y[i] - py[i]) * AIR;
+        // 속도 상한 (놓을 때 휙 날아가지 않게)
+        const v = Math.hypot(vx, vy);
+        if (v > maxStep) {
+          vx *= maxStep / v;
+          vy *= maxStep / v;
+        }
         px[i] = x[i];
         py[i] = y[i];
         x[i] += vx;
         y[i] += vy + GRAVITY * dt * dt;
       }
-      for (let it = 0; it < ITERATIONS; it++) {
-        if (drag) {
-          // 잡은 점(A→B 사이 t)이 포인터로 가도록 A·B를 나눠 이동 → 아래쪽을 잡으면 회전도 생김
-          const t = drag.t;
-          const gx = x[A] + (x[B] - x[A]) * t;
-          const gy = y[A] + (y[B] - y[A]) * t;
-          const w = 0.5 / ((1 - t) ** 2 + t ** 2);
-          const dx = (pointerX - gx) * w;
-          const dy = (pointerY - gy) * w;
-          x[A] += dx * (1 - t);
-          y[A] += dy * (1 - t);
-          x[B] += dx * t;
-          y[B] += dy * t;
+      if (drag) {
+        // 잡은 점(A→B 사이 t)을 포인터 쪽으로 조금씩 끌어감 → 무게 때문에 살짝 늦게 따라옴
+        // A·B에 나눠 걸어서 아래쪽을 잡으면 회전도 생김
+        const t = drag.t;
+        const gx = x[A] + (x[B] - x[A]) * t;
+        const gy = y[A] + (y[B] - y[A]) * t;
+        let dx = (pointerX - gx) * DRAG_GAIN;
+        let dy = (pointerY - gy) * DRAG_GAIN;
+        const d = Math.hypot(dx, dy);
+        if (d > maxStep) {
+          dx *= maxStep / d;
+          dy *= maxStep / d;
         }
+        const w = 1 / ((1 - t) ** 2 + t ** 2);
+        x[A] += dx * w * (1 - t);
+        y[A] += dy * w * (1 - t);
+        x[B] += dx * w * t;
+        y[B] += dy * w * t;
+      }
+      for (let it = 0; it < ITERATIONS; it++) {
         for (let i = 0; i < A; i++) constrain(i, i + 1, seg, true);
         constrain(A, B, CARD_LEN, false);
       }
@@ -168,7 +184,7 @@ export default function BadgeScene() {
       lastCx = cx;
       lastCy = cy;
       const speed = Math.hypot(vx, vy);
-      if (speed > 40) ring.excite(Math.atan2(vy, vx), Math.min(speed * 0.08, 140));
+      if (speed > 40) ring.excite(Math.atan2(vy, vx), Math.min(speed * 0.05, 80));
 
       // 커서 기울기 (카드 좌표계로 돌려서 계산)
       let tx = 0;
@@ -183,7 +199,7 @@ export default function BadgeScene() {
       }
       const ease = 1 - Math.exp(-dt * 10);
       tiltX += (tx - tiltX) * ease;
-      tiltY += (ty + clamp(vx / 1500) * 12 - tiltY) * ease;
+      tiltY += (ty + clamp(vx / 2500) * 5 - tiltY) * ease; // 흔들릴 때 3D 비틀림은 살짝만
       const flipTarget = flippedRef.current ? 180 : 0;
       flip = reduce ? flipTarget : flip + (flipTarget - flip) * (1 - Math.exp(-dt * 9));
       card3d.style.transform = `rotateX(${tiltX}deg) rotateY(${tiltY + flip}deg)`;
