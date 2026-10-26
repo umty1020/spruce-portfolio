@@ -33,7 +33,6 @@ export default function WorkTrack({ projects, axis, copies, crossShift, onIndexC
 
   const scroller = useSnapScroller({
     count,
-    wheelPerPx: 1 / PITCH,
     touchPerPx: 1 / PITCH,
     onFrame: (pos) => {
       const cards = trackRef.current?.children;

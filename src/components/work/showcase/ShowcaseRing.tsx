@@ -9,7 +9,6 @@ import "./showcase-ring.css";
 
 const COPIES = 2; // 프로젝트 5개 × 2 = 타일 10장 (36° 간격)
 // 크기(카드·반지름·원근)는 showcase-ring.css에서 화면 폭 비례로
-const WHEEL_DEG_PER_PX = 0.12;
 const TOUCH_DEG_PER_PX = 0.3;
 
 // 마우스 드래그: 위아래 → 링을 기울여 원통의 아랫면·윗면을 보여줌, 좌우 → 링 회전
@@ -49,7 +48,6 @@ export default function ShowcaseRing({ projects, onFrontChange, onFrontHover }: 
   // 타일 i는 -i·step 에 놓여 있으므로, 위치 pos(칸)일 때 링 각도 = pos·step 이면 타일 pos가 정면
   const scroller = useSnapScroller({
     count,
-    wheelPerPx: WHEEL_DEG_PER_PX / step,
     touchPerPx: TOUCH_DEG_PER_PX / step,
     onFrame: (pos) => {
       degRef.current = pos * step;
