@@ -4,7 +4,6 @@ import Lenis from "lenis";
 import { useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useRef, type ReactNode } from "react";
 import { FillText, setFill } from "./FillText";
-import { PANEL_W } from "./parts";
 import "./detail.css";
 
 // 상세 페이지 공통 가로 트랙 (상세 A · B)
@@ -12,7 +11,8 @@ import "./detail.css";
 // 맨 앞에서 계속 올리면 이전 프로젝트. 트랙 내용은 디자인 단위(높이 900)로 배치하고 화면에 맞게 축소.
 //
 // 두 가지 모드
-// - panels 있음(상세 A): 섹션 한 장(1440)씩 넘김. 한 번 슥 밀면 다음 섹션이 화면 가운데에 딱 맞춰짐.
+// - panels 있음(상세 A): 섹션 하나씩 넘김. 한 번 슥 밀면 다음 섹션이 화면 가운데에 딱 맞춰지고,
+//   섹션 폭이 화면보다 좁아서 양옆에 이전·다음 섹션이 조금씩 보임.
 //   마지막 뒤에 "다음 프로젝트" 장이 자동으로 붙음.
 // - panels 없음(상세 B): Lenis 관성으로 연속 이동, nextAt 위치에 "다음 프로젝트".
 
@@ -20,6 +20,7 @@ const DESIGN_H = 900;
 const NEXT_ZONE = 700; // 끝에서 "다음 프로젝트" 글자를 채우는 스크롤 거리(px)
 const PREV_ZONE = 500; // 맨 앞에서 위로 이만큼 굴리면 이전 프로젝트
 const PAGED_EDGE_ZONE = 1100; // 섹션 모드: 끝에서 새로 이만큼 굴려야 다음·이전 프로젝트 (한 번 밀어선 다 안 참)
+const END_W = 640; // 섹션 모드 마지막 "다음 프로젝트" 장의 폭
 
 // 섹션 넘김
 const WHEEL_THRESHOLD = 25; // 이만큼(px) 굴리면 한 장
@@ -39,7 +40,7 @@ type Props = {
   dark?: boolean;
   children: ReactNode;
 } & (
-  | { panels: number; width?: never; nextAt?: never } // 섹션 장 수 (상세 A)
+  | { panels: number[]; width?: never; nextAt?: never } // 섹션별 폭 (콘텐츠 + 양옆 여백, 상세 A)
   | { panels?: never; width: number; nextAt: [number, number] } // 연속 트랙 길이·끝 문구 x (상세 B)
 );
 
@@ -57,7 +58,11 @@ export default function DetailTrack({ panels, width: trackWidth, nextAt, prev, n
   const lenisRef = useRef<Lenis | null>(null);
 
   const paged = panels !== undefined;
-  const width = paged ? (panels + 1) * PANEL_W : trackWidth;
+  // 섹션 모드: 섹션 폭들 + 마지막 "다음 프로젝트" 장. 각 장의 왼쪽 위치
+  const widths = paged ? [...panels, END_W] : [];
+  const lefts = widths.map((_, i) => widths.slice(0, i).reduce((a, b) => a + b, 0));
+  const width = paged ? lefts[lefts.length - 1] + END_W : trackWidth;
+  const panelsKey = widths.join(",");
 
   useEffect(() => {
     const spacer = spacerRef.current!;
@@ -69,9 +74,12 @@ export default function DetailTrack({ panels, width: trackWidth, nextAt, prev, n
     let offsetY = 0;
     let maxY = 0; // 트랙이 움직이는 스크롤 거리
     let offsetX = 0; // 스크롤 0일 때 트랙 x (섹션 모드: 첫 장이 화면 가운데)
-    let pageW = 0; // 섹션 한 장의 화면 px
+    let stops: number[] = []; // 섹션 모드: 각 장의 가운데가 화면 가운데에 오는 스크롤 값
     let lastPct = -1;
     let leaving = false;
+    const sizes = panelsKey ? panelsKey.split(",").map(Number) : [];
+    const centers = sizes.map((w, i) => sizes.slice(0, i).reduce((a, b) => a + b, 0) + w / 2);
+    const last = Math.max(0, sizes.length - 1);
 
     const layout = () => {
       const vw = window.innerWidth;
@@ -79,9 +87,9 @@ export default function DetailTrack({ panels, width: trackWidth, nextAt, prev, n
       scale = Math.min(1, vh / DESIGN_H);
       offsetY = Math.max(0, (vh - DESIGN_H * scale) / 2);
       if (paged) {
-        pageW = PANEL_W * scale;
-        offsetX = (pageW - vw) / 2; // 음수면 왼쪽 여백, 양수면 양옆이 조금 잘림
-        maxY = panels * pageW;
+        offsetX = centers[0] * scale - vw / 2; // 첫 장이 화면 가운데
+        stops = centers.map((c) => (c - centers[0]) * scale);
+        maxY = stops[last];
         spacer.style.height = `${maxY + vh}px`;
       } else {
         offsetX = 0;
@@ -128,16 +136,19 @@ export default function DetailTrack({ panels, width: trackWidth, nextAt, prev, n
     update(window.scrollY);
 
     // ── 섹션 넘김
-    const pageIndex = () => Math.round(lenis.targetScroll / pageW);
+    // 지금(목표) 스크롤에서 가장 가까운 장
+    const nearest = (y: number) =>
+      stops.reduce((best, s, i) => (Math.abs(s - y) < Math.abs(stops[best] - y) ? i : best), 0);
+    const pageIndex = () => nearest(lenis.targetScroll);
     const goPage = (i: number) => {
-      const page = Math.max(0, Math.min(panels ?? 0, i));
-      lenis.scrollTo(page * pageW, { duration: PAGE_DURATION, easing: easeOutBack, immediate: reduce, force: true });
+      const page = Math.max(0, Math.min(last, i));
+      lenis.scrollTo(stops[page], { duration: PAGE_DURATION, easing: easeOutBack, immediate: reduce, force: true });
     };
 
     const onResize = () => {
       const page = paged ? pageIndex() : 0;
       layout();
-      if (paged) lenis.scrollTo(page * pageW, { immediate: true, force: true });
+      if (paged) lenis.scrollTo(stops[page], { immediate: true, force: true });
       update(lenis.scroll);
     };
 
@@ -194,7 +205,7 @@ export default function DetailTrack({ panels, width: trackWidth, nextAt, prev, n
       const page = pageIndex();
       const settled = Math.abs(lenis.scroll - lenis.targetScroll) < 2;
       // 마지막 장에서 새로 내림 · 첫 장에서 새로 올림 → 글자 채우기 (이 제스처 동안 연속)
-      if (settled && page >= (panels ?? 0) && delta > 0) return edge(1, delta, PAGED_EDGE_ZONE);
+      if (settled && page >= last && delta > 0) return edge(1, delta, PAGED_EDGE_ZONE);
       if (settled && page <= 0 && delta < 0) return edge(-1, -delta, PAGED_EDGE_ZONE);
 
       acc += delta;
@@ -236,11 +247,11 @@ export default function DetailTrack({ panels, width: trackWidth, nextAt, prev, n
       clearTimeout(touchSnap);
       touchSnap = window.setTimeout(() => {
         if (touching || Math.abs(lenis.scroll - lenis.targetScroll) > 2) return;
+        // 40px 넘게 밀었으면 그 방향으로 한 장, 아니면 가장 가까운 장
         const moved = lenis.scroll - touchStart;
-        const pos = lenis.scroll / pageW;
-        const page = moved > 0 ? Math.ceil(pos - 0.15) : moved < 0 ? Math.floor(pos + 0.15) : Math.round(pos);
+        const page = Math.abs(moved) > 40 ? nearest(touchStart) + Math.sign(moved) : nearest(lenis.scroll);
         touchStart = -1;
-        if (Math.abs(page * pageW - lenis.scroll) > 1) goPage(page);
+        goPage(page);
       }, 120);
     });
     touchStart = -1; // 터치로 움직였을 때만 맞춤
@@ -262,7 +273,7 @@ export default function DetailTrack({ panels, width: trackWidth, nextAt, prev, n
       lenis.destroy();
       lenisRef.current = null;
     };
-  }, [paged, panels, width, prev.slug, next.slug, router]);
+  }, [paged, panelsKey, width, prev.slug, next.slug, router]);
 
   const lock = () => lenisRef.current?.stop();
   const unlock = () => lenisRef.current?.start();
@@ -278,7 +289,7 @@ export default function DetailTrack({ panels, width: trackWidth, nextAt, prev, n
               // 마지막 장: 가운데에 "다음 프로젝트" (계속 내리면 왼쪽부터 차오름)
               <section
                 className="absolute top-0 flex h-[900px] flex-col items-center justify-center gap-[10px]"
-                style={{ left: (panels ?? 0) * PANEL_W, width: PANEL_W }}
+                style={{ left: lefts[lefts.length - 1], width: END_W }}
               >
                 <p className="detail-next-static">
                   <FillText text="SCROLL DOWN TO NEXT PROJECT" fillRef={nextFillRef} />
