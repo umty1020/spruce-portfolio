@@ -170,3 +170,21 @@ html.lenis body {
     display: none;
   }
 }
+
+/* 섹션 모드 마지막 장: 가운데 "다음 프로젝트" */
+.detail-next-static {
+  font-size: 15px;
+  line-height: 1.6;
+  letter-spacing: 0.6px;
+  white-space: nowrap;
+}
+.detail-next-title-static {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 700;
+  line-height: normal;
+  color: var(--text-primary);
+}
+.detail-dark .detail-next-title-static {
+  color: var(--text-inverse);
+}

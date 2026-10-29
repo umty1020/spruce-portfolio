@@ -3,6 +3,18 @@
 
 type Tone = { dark?: boolean };
 
+/** 섹션 한 장의 폭 (디자인 단위). 섹션 단위로 넘기는 트랙에서 한 번에 한 장씩 화면 가운데에 맞춰짐 */
+export const PANEL_W = 1440;
+
+/** 섹션 한 장 (1440 × 900). 안의 x·y는 이 장 기준 */
+export function Panel({ index, children }: { index: number; children: React.ReactNode }) {
+  return (
+    <section className="absolute top-0 h-[900px]" style={{ left: index * PANEL_W, width: PANEL_W }}>
+      {children}
+    </section>
+  );
+}
+
 const muted = (dark?: boolean) => (dark ? "text-text-muted-inverse" : "text-text-muted");
 const strong = (dark?: boolean) => (dark ? "text-text-inverse" : "text-text-primary");
 
