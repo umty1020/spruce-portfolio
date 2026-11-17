@@ -325,3 +325,8 @@ html.lenis body {
     width: 100vw;
   }
 }
+
+/* ③ 미리보기 Desktop ↔ Mobile 전환 */
+.demo-swap {
+  animation: demo-pop 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}

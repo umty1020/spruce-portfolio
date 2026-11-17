@@ -25,37 +25,42 @@ export default function LiveDemo({ url, device: initial, preview, previewMobile 
   return (
     <>
       <DeviceToggle device={device} onChange={setDevice} className="absolute -top-[52px] right-0" />
-      {/* 트랙 미리보기: 900 × 540 브라우저 프레임 */}
-      <div className="absolute inset-0 overflow-hidden border-2 border-border-strong bg-bg-page">
-        <Toolbar url={url} height={36} />
-        <div className="absolute top-[34px] left-0 flex h-[502px] w-[896px] flex-col items-center justify-center gap-[16px] bg-bg-panel">
-          {/* 실제 화면을 배경으로 깔고 살짝 어둡게. Mobile 토글이면 가운데에 모바일 화면 */}
-          {device === "mobile" && previewMobile ? (
-            <div className="absolute inset-0 bg-bg-dark">
-              <div className="absolute top-0 left-1/2 h-full w-[300px] -translate-x-1/2">
-                <Image src={previewMobile} alt="" fill sizes="300px" className="object-cover object-top" />
-              </div>
-            </div>
-          ) : (
-            preview && <Image src={preview} alt="" fill sizes="900px" className="object-cover object-top" />
-          )}
-          {(preview || previewMobile) && <div className="absolute inset-0 bg-bg-dark/45" />}
-          <p className={`wf-mono relative ${preview ? "text-text-inverse" : "text-text-muted"}`}>
-            {url ? "실제 사이트 미리보기" : "[시연 URL 준비 중]"}
-          </p>
-          <button
-            type="button"
-            disabled={!url}
-            onClick={() => setOpen(true)}
-            className="relative flex h-[48px] w-[220px] cursor-pointer items-center justify-between rounded-full bg-bg-dark pr-[16px] pl-[24px] font-display text-[17px] leading-normal font-bold text-text-inverse disabled:cursor-not-allowed disabled:opacity-40"
-          >
-            클릭해서 직접 써보기
-            <Image src="/icons/arrow-up-right.svg" alt="" width={17} height={17} unoptimized />
-          </button>
+      {device === "mobile" ? (
+        // 트랙 미리보기 · Mobile: 900 × 540 칸 가운데에 모바일 브라우저 화면 비율(402:676) 프레임 322 × 540
+        <div key="mobile" className="demo-swap absolute top-0 left-[289px] h-[540px] w-[322px] overflow-hidden rounded-[32px] border-2 border-border-strong bg-bg-panel">
+          {previewMobile && <Image src={previewMobile} alt="" fill sizes="322px" className="object-cover object-top" />}
+          <PreviewCta url={url} dim={!!previewMobile} onOpen={() => setOpen(true)} compact />
         </div>
-      </div>
+      ) : (
+        // 트랙 미리보기 · Desktop: 900 × 540 브라우저 프레임
+        <div key="desktop" className="demo-swap absolute inset-0 overflow-hidden border-2 border-border-strong bg-bg-page">
+          <Toolbar url={url} height={36} />
+          <div className="absolute top-[34px] left-0 h-[502px] w-[896px] bg-bg-panel">
+            {preview && <Image src={preview} alt="" fill sizes="900px" className="object-cover object-top" />}
+            <PreviewCta url={url} dim={!!preview} onOpen={() => setOpen(true)} />
+          </div>
+        </div>
+      )}
       {open && url && <DemoModal url={url} device={device} onDevice={setDevice} onClose={() => setOpen(false)} />}
     </>
+  );
+}
+
+// 실제 화면을 배경으로 살짝 어둡게 깔고, 그 위 가운데에 "클릭해서 직접 써보기"
+function PreviewCta({ url, dim, onOpen, compact = false }: { url?: string; dim: boolean; onOpen: () => void; compact?: boolean }) {
+  return (
+    <div className={`absolute inset-0 flex flex-col items-center justify-center gap-[16px] ${dim ? "bg-bg-dark/45" : ""}`}>
+      <p className={`wf-mono ${dim ? "text-text-inverse" : "text-text-muted"}`}>{url ? "실제 사이트 미리보기" : "[시연 URL 준비 중]"}</p>
+      <button
+        type="button"
+        disabled={!url}
+        onClick={onOpen}
+        className={`flex h-[48px] cursor-pointer items-center justify-between rounded-full bg-bg-dark pr-[16px] font-display leading-normal font-bold text-text-inverse disabled:cursor-not-allowed disabled:opacity-40 ${compact ? "w-[200px] pl-[20px] text-[15px]" : "w-[220px] pl-[24px] text-[17px]"}`}
+      >
+        클릭해서 직접 써보기
+        <Image src="/icons/arrow-up-right.svg" alt="" width={17} height={17} unoptimized />
+      </button>
+    </div>
   );
 }
 
