@@ -87,7 +87,7 @@ export default function UiuxDetail({ project }: { project: Project & { uiux: Det
           ③ 라이브 시연
         </Label>
         <Box x={PAD} y={180} w={900} h={540} className="overflow-visible">
-          <LiveDemo url={d.demo.url} device={d.demo.device} preview={d.demo.preview} previewMobile={d.demo.previewMobile} />
+          <LiveDemo url={d.demo.url} device={d.demo.device} preview={d.demo.preview} previewMobile={d.demo.previewMobile} mobileOnly={d.demo.mobileOnly} />
         </Box>
       </Panel>
 

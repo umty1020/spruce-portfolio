@@ -16,6 +16,7 @@ export type UiuxDetail = {
     device: "desktop" | "mobile"; // 처음 열릴 때 프레임 (Dang Square는 mobile)
     preview?: string; // 트랙에 보이는 미리보기 이미지
     previewMobile?: string; // Mobile 토글일 때 미리보기
+    mobileOnly?: boolean; // 모바일 전용 서비스: Desktop/Mobile 토글 숨김
   };
   slides: string[]; // ④ PDF → 페이지별 WebP
   slidesNote?: string; // 슬라이드가 없을 때 안내
@@ -104,14 +105,14 @@ export const projects: Project[] = [
       hero: "/work/dang-square/hero.webp",
       problem:
         "파편화된 반려생활 스키마와 명확한 탄소 감축 인센티브가 없어, 자발적인 친환경 실천이 오래 이어지지 않는다.\n실시간 GPS 공유와 이미지·AI 추천 처리에서 생기는 고전력 서버 트래픽이 저탄소 서비스의 본질과 부딪힌다.",
-      demo: { url: "https://dang-square.vercel.app", device: "mobile", previewMobile: "/work/dang-square/screen-splash.webp" },
-      slides: ["/work/dang-square/slides/01.webp", "/work/dang-square/slides/02.webp", "/work/dang-square/slides/03.webp", "/work/dang-square/slides/04.webp", "/work/dang-square/slides/05.webp", "/work/dang-square/slides/06.webp", "/work/dang-square/slides/07.webp", "/work/dang-square/slides/08.webp", "/work/dang-square/slides/09.webp"],
+      demo: { url: "https://dang-square.vercel.app", device: "mobile", mobileOnly: true, previewMobile: "/work/dang-square/screen-splash.webp" },
+      slides: ["/work/dang-square/slides/01.webp", "/work/dang-square/slides/02.webp", "/work/dang-square/slides/03.webp", "/work/dang-square/slides/04.webp", "/work/dang-square/slides/05.webp", "/work/dang-square/slides/06.webp", "/work/dang-square/slides/07.webp", "/work/dang-square/slides/08.webp"],
       screens: [
-        { label: "실시간 위치 기반 산책 매칭", device: "mobile", src: "/work/dang-square/phone-walk.webp" },
-        { label: "저탄소 NZ마켓", device: "mobile", src: "/work/dang-square/phone-market.webp" },
-        { label: "자원순환 중고거래", device: "mobile", src: "/work/dang-square/phone-secondhand.webp" },
-        { label: "동네 커뮤니티", device: "mobile", src: "/work/dang-square/phone-community.webp" },
-        { label: "마이페이지 · 산책 기록", device: "mobile", src: "/work/dang-square/phone-mypage.webp" },
+        { label: "실시간 위치 기반 산책 매칭", device: "mobile", src: "/work/dang-square/mock-walk.webp" },
+        { label: "저탄소 NZ마켓", device: "mobile", src: "/work/dang-square/mock-market.webp" },
+        { label: "자원순환 중고거래", device: "mobile", src: "/work/dang-square/mock-secondhand.webp" },
+        { label: "동네 커뮤니티", device: "mobile", src: "/work/dang-square/mock-community.webp" },
+        { label: "마이페이지 · 산책 기록", device: "mobile", src: "/work/dang-square/mock-mypage.webp" },
       ],
       info: [
         { label: "기간", lines: ["2026.11", "인하대학교 Net-Zero 해커톤"] },

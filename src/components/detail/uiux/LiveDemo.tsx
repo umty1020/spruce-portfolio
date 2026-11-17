@@ -9,7 +9,7 @@ import { useScrollLock } from "../DetailTrack";
 // 트랙에서는 미리보기만. 클릭하면 확대되고 그때 iframe을 처음 로드. 확대 중에는 페이지 스크롤 잠금.
 
 type Device = "desktop" | "mobile";
-type Props = { url?: string; device: Device; preview?: string; previewMobile?: string };
+type Props = { url?: string; device: Device; preview?: string; previewMobile?: string; mobileOnly?: boolean };
 
 const FRAME: Record<Device, { w: string; h: string }> = {
   desktop: { w: "min(1120px, calc(100vw - 64px))", h: "min(680px, calc(100dvh - 220px))" },
@@ -18,13 +18,13 @@ const FRAME: Record<Device, { w: string; h: string }> = {
 
 const host = (url?: string) => (url ? new URL(url).host : "[시연 URL]");
 
-export default function LiveDemo({ url, device: initial, preview, previewMobile }: Props) {
+export default function LiveDemo({ url, device: initial, preview, previewMobile, mobileOnly = false }: Props) {
   const [device, setDevice] = useState<Device>(initial);
   const [open, setOpen] = useState(false);
 
   return (
     <>
-      <DeviceToggle device={device} onChange={setDevice} className="absolute -top-[52px] right-0" />
+      {!mobileOnly && <DeviceToggle device={device} onChange={setDevice} className="absolute -top-[52px] right-0" />}
       {device === "mobile" ? (
         // 트랙 미리보기 · Mobile: 900 × 540 칸 가운데에 모바일 브라우저 화면 비율(402:676) 프레임 322 × 540
         <div key="mobile" className="demo-swap absolute top-0 left-[289px] h-[540px] w-[322px] overflow-hidden rounded-[32px] border-2 border-border-strong bg-bg-panel">
@@ -41,7 +41,7 @@ export default function LiveDemo({ url, device: initial, preview, previewMobile 
           </div>
         </div>
       )}
-      {open && url && <DemoModal url={url} device={device} onDevice={setDevice} onClose={() => setOpen(false)} />}
+      {open && url && <DemoModal url={url} device={device} onDevice={mobileOnly ? undefined : setDevice} onClose={() => setOpen(false)} />}
     </>
   );
 }
@@ -64,7 +64,7 @@ function PreviewCta({ url, dim, onOpen, compact = false }: { url?: string; dim: 
   );
 }
 
-function DemoModal({ url, device, onDevice, onClose }: { url: string; device: Device; onDevice: (d: Device) => void; onClose: () => void }) {
+function DemoModal({ url, device, onDevice, onClose }: { url: string; device: Device; onDevice?: (d: Device) => void; onClose: () => void }) {
   const { lock, unlock } = useScrollLock();
   const frameRef = useRef<HTMLDivElement>(null);
   const lastRect = useRef<DOMRect | null>(null);
@@ -99,7 +99,7 @@ function DemoModal({ url, device, onDevice, onClose }: { url: string; device: De
   return createPortal(
     <div className="demo-overlay" role="dialog" aria-modal aria-label="라이브 시연">
       <button type="button" className="demo-dim cursor-pointer" aria-label="닫기" onClick={onClose} />
-      <DeviceToggle device={device} onChange={onDevice} inverse className="absolute top-[52px] left-1/2 -translate-x-1/2" />
+      {onDevice && <DeviceToggle device={device} onChange={onDevice} inverse className="absolute top-[52px] left-1/2 -translate-x-1/2" />}
       <button
         type="button"
         onClick={onClose}
