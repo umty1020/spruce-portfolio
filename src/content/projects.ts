@@ -103,19 +103,22 @@ export const projects: Project[] = [
     kind: "uiux",
     summary: "교내 공지 아카이빙 웹/앱",
     roles: "UX/UI · 그래픽 · 프로토타입",
-    icon: { label: "학교 로고" },
+    icon: { label: "학교 로고", src: "/work/inform/icon.webp" },
     uiux: {
       overview: "인하대 안에 흩어진 교내 공지를 한곳에 모아 보여주는 웹/앱",
       solutions: "UX/UI Design, 그래픽, 인터랙션 프로토타입, 반응형 웹",
       problem:
         "교내 공지사항과 학사일정이 여러 게시판에 파편화되어 있어, 학생들이 수강신청·장학금·공모전 등 필수 일정을 제때 확인하지 못하고 정보 탐색에 비효율을 겪는다.",
+      hero: "/work/inform/hero.webp",
+      problemImage: "/work/inform/admin-sources.webp",
       demo: { url: "https://inha-inform.today", device: "desktop" },
       slides: [],
-      slidesNote: "[IN:FORM 발표 PDF 제작 예정]",
       screens: [
-        { label: "월간 ↔ 주간 캘린더", device: "mobile" },
-        { label: "맞춤형 공지 태그 필터", device: "mobile" },
-        { label: "어드민 공지 무결성 · 중복 관리", device: "desktop" },
+        { label: "온보딩 · 관심 분야 선택", device: "mobile", src: "/work/inform/onboarding.webp" },
+        { label: "월간 ↔ 주간 캘린더", device: "mobile", src: "/work/inform/home.webp" },
+        { label: "맞춤형 공지 태그 필터", device: "mobile", src: "/work/inform/filter.webp" },
+        { label: "마감 · 일정 알림", device: "mobile", src: "/work/inform/alert.webp" },
+        { label: "어드민 공지 무결성 · 중복 관리", device: "desktop", src: "/work/inform/admin-home.webp" },
       ],
       info: [
         { label: "기간", lines: ["v1 2026.01.29 – 04.12", "v2 2026.07.26 – 10.25"] },
