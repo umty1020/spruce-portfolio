@@ -188,3 +188,9 @@ html.lenis body {
 .detail-dark .detail-next-title-static {
   color: var(--text-inverse);
 }
+
+/* ④ 긴 발표자료 칸: 얇은 스크롤바 */
+.long-deck {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}

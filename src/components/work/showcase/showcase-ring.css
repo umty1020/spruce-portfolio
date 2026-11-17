@@ -39,7 +39,7 @@
 .showcase-back {
   position: absolute;
   inset: 0;
-  border-radius: 22%;
+  border-radius: 24%; /* IN:FORM 앱 아이콘 코너 (한 변의 24%) */
   overflow: hidden;
   backface-visibility: hidden;
 }

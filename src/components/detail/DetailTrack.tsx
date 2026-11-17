@@ -193,6 +193,20 @@ export default function DetailTrack({ panels, width: trackWidth, nextAt, prev, n
         return;
       }
 
+      // 발표자료처럼 안에서 스크롤되는 칸: 그 방향으로 더 내려갈 수 있으면 브라우저 기본 스크롤에 맡김.
+      // 이 제스처는 잠가서, 칸 끝에 닿은 뒤 남은 관성이 트랙을 넘기지 않게 함
+      const inner = (e.target as Element | null)?.closest?.("[data-inner-scroll]");
+      if (inner) {
+        const room = delta > 0 ? inner.scrollHeight - inner.clientHeight - inner.scrollTop : inner.scrollTop;
+        if (room > 1) {
+          locked = true;
+          lockedAt = performance.now();
+          lastAbs = Math.abs(delta);
+          unlockLater();
+          return;
+        }
+      }
+
       e.preventDefault();
       // 한 제스처(관성 포함)가 끝날 때까지는 잠김 — 끝에 도착한 뒤 남은 관성으로 다음 프로젝트에 넘어가지 않게
       const abs = Math.abs(delta);

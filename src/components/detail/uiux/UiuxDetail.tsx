@@ -4,6 +4,7 @@ import { getNeighbors } from "@/content/projects";
 import DetailTrack from "../DetailTrack";
 import { Box, InfoList, Label, Panel, Placeholder, TextBlock } from "../parts";
 import LiveDemo from "./LiveDemo";
+import LongDeck from "./LongDeck";
 import SlideViewer from "./SlideViewer";
 
 // 상세 A · UI/UX (Figma 4:42) — 섹션 하나씩 넘김. 한 번 밀면 다음 섹션이 화면 가운데에 맞춰짐.
@@ -12,6 +13,9 @@ import SlideViewer from "./SlideViewer";
 
 const PAD = 40;
 const SCREEN_GAP = 16;
+// 긴 발표자료(Behance식) 칸: 폭 720, 높이 640 (위 150 → 아래 790)
+const DECK_W = 720;
+const DECK_H = 640;
 
 const screenSize = (device: "mobile" | "desktop") => (device === "mobile" ? [200, 420, 240] : [440, 280, 310]);
 
@@ -27,7 +31,7 @@ export default function UiuxDetail({ project }: { project: Project & { uiux: Det
     300 + 48 + 760, // ① 설명 + 대표 이미지
     300 + 60 + 560, // ② 글 + 이미지
     900, // ③ 시연 프레임
-    640, // ④ 슬라이드
+    d.deck ? DECK_W : 640, // ④ 슬라이드 · 긴 발표자료
     screensW, // ⑤ 화면들
     400, // ⑥ 정보 표
     300, // ⑦ 결과 글
@@ -82,10 +86,23 @@ export default function UiuxDetail({ project }: { project: Project & { uiux: Det
 
       {/* ④ 발표자료 */}
       <Panel {...section(3)}>
-        <Label x={PAD}>④ 발표자료</Label>
-        <Box x={PAD} y={240} w={640} h={440} className="overflow-visible">
-          <SlideViewer slides={d.slides} note={d.slidesNote} />
-        </Box>
+        {d.deck ? (
+          <>
+            <Label x={PAD} y={120}>
+              ④ 발표자료
+            </Label>
+            <Box x={PAD} y={150} w={DECK_W} h={DECK_H} className="overflow-visible">
+              <LongDeck pages={d.deck} width={DECK_W} height={DECK_H} />
+            </Box>
+          </>
+        ) : (
+          <>
+            <Label x={PAD}>④ 발표자료</Label>
+            <Box x={PAD} y={240} w={640} h={440} className="overflow-visible">
+              <SlideViewer slides={d.slides} note={d.slidesNote} />
+            </Box>
+          </>
+        )}
       </Panel>
 
       {/* ⑤ 핵심 기능 화면: 모바일은 위 240, 데스크톱은 세로 가운데(위 310) */}

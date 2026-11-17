@@ -18,6 +18,7 @@ export type UiuxDetail = {
   };
   slides: string[]; // ④ PDF → 페이지별 WebP
   slidesNote?: string; // 슬라이드가 없을 때 안내
+  deck?: { src: string; w: number; h: number }[]; // 긴 한 장짜리 발표자료(Behance식 세로 스크롤) — 있으면 slides 대신
   screens: { label: string; device: "mobile" | "desktop"; src?: string }[]; // ⑤
   info: { label: string; lines: string[] }[]; // ⑥
   result: string; // ⑦
@@ -113,6 +114,21 @@ export const projects: Project[] = [
       problemImage: "/work/inform/admin-sources.webp",
       demo: { url: "https://inha-inform.today", device: "desktop" },
       slides: [],
+      deck: [
+        { src: "/work/inform/deck/01.webp", w: 1440, h: 2000 },
+        { src: "/work/inform/deck/02.webp", w: 1440, h: 2000 },
+        { src: "/work/inform/deck/03.webp", w: 1440, h: 2000 },
+        { src: "/work/inform/deck/04.webp", w: 1440, h: 2000 },
+        { src: "/work/inform/deck/05.webp", w: 1440, h: 2000 },
+        { src: "/work/inform/deck/06.webp", w: 1440, h: 2000 },
+        { src: "/work/inform/deck/07.webp", w: 1440, h: 2000 },
+        { src: "/work/inform/deck/08.webp", w: 1440, h: 2000 },
+        { src: "/work/inform/deck/09.webp", w: 1440, h: 2000 },
+        { src: "/work/inform/deck/10.webp", w: 1440, h: 2000 },
+        { src: "/work/inform/deck/11.webp", w: 1440, h: 2000 },
+        { src: "/work/inform/deck/12.webp", w: 1440, h: 2000 },
+        { src: "/work/inform/deck/13.webp", w: 1440, h: 609 },
+      ],
       screens: [
         { label: "온보딩 · 관심 분야 선택", device: "mobile", src: "/work/inform/onboarding.webp" },
         { label: "월간 ↔ 주간 캘린더", device: "mobile", src: "/work/inform/home.webp" },
