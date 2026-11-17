@@ -9,7 +9,7 @@ import { useScrollLock } from "../DetailTrack";
 // 트랙에서는 미리보기만. 클릭하면 확대되고 그때 iframe을 처음 로드. 확대 중에는 페이지 스크롤 잠금.
 
 type Device = "desktop" | "mobile";
-type Props = { url?: string; device: Device; preview?: string };
+type Props = { url?: string; device: Device; preview?: string; previewMobile?: string };
 
 const FRAME: Record<Device, { w: string; h: string }> = {
   desktop: { w: "min(1120px, calc(100vw - 64px))", h: "min(680px, calc(100dvh - 220px))" },
@@ -18,7 +18,7 @@ const FRAME: Record<Device, { w: string; h: string }> = {
 
 const host = (url?: string) => (url ? new URL(url).host : "[시연 URL]");
 
-export default function LiveDemo({ url, device: initial, preview }: Props) {
+export default function LiveDemo({ url, device: initial, preview, previewMobile }: Props) {
   const [device, setDevice] = useState<Device>(initial);
   const [open, setOpen] = useState(false);
 
@@ -29,8 +29,20 @@ export default function LiveDemo({ url, device: initial, preview }: Props) {
       <div className="absolute inset-0 overflow-hidden border-2 border-border-strong bg-bg-page">
         <Toolbar url={url} height={36} />
         <div className="absolute top-[34px] left-0 flex h-[502px] w-[896px] flex-col items-center justify-center gap-[16px] bg-bg-panel">
-          {preview && <Image src={preview} alt="" fill sizes="900px" className="object-cover" />}
-          <p className="wf-mono relative text-text-muted">{url ? "실제 사이트 미리보기" : "[시연 URL 준비 중]"}</p>
+          {/* 실제 화면을 배경으로 깔고 살짝 어둡게. Mobile 토글이면 가운데에 모바일 화면 */}
+          {device === "mobile" && previewMobile ? (
+            <div className="absolute inset-0 bg-bg-dark">
+              <div className="absolute top-0 left-1/2 h-full w-[300px] -translate-x-1/2">
+                <Image src={previewMobile} alt="" fill sizes="300px" className="object-cover object-top" />
+              </div>
+            </div>
+          ) : (
+            preview && <Image src={preview} alt="" fill sizes="900px" className="object-cover object-top" />
+          )}
+          {(preview || previewMobile) && <div className="absolute inset-0 bg-bg-dark/45" />}
+          <p className={`wf-mono relative ${preview ? "text-text-inverse" : "text-text-muted"}`}>
+            {url ? "실제 사이트 미리보기" : "[시연 URL 준비 중]"}
+          </p>
           <button
             type="button"
             disabled={!url}

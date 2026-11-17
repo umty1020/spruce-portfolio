@@ -15,6 +15,7 @@ export type UiuxDetail = {
     url?: string; // ③ 실제 사이트 (없으면 미리보기만)
     device: "desktop" | "mobile"; // 처음 열릴 때 프레임 (Dang Square는 mobile)
     preview?: string; // 트랙에 보이는 미리보기 이미지
+    previewMobile?: string; // Mobile 토글일 때 미리보기
   };
   slides: string[]; // ④ PDF → 페이지별 WebP
   slidesNote?: string; // 슬라이드가 없을 때 안내
@@ -112,7 +113,12 @@ export const projects: Project[] = [
         "교내 공지사항과 학사일정이 여러 게시판에 파편화되어 있어, 학생들이 수강신청·장학금·공모전 등 필수 일정을 제때 확인하지 못하고 정보 탐색에 비효율을 겪는다.",
       hero: "/work/inform/hero.webp",
       problemImage: "/work/inform/admin-sources.webp",
-      demo: { url: "https://inha-inform.today", device: "desktop" },
+      demo: {
+        url: "https://inha-inform.today",
+        device: "desktop",
+        preview: "/work/inform/demo-desktop.webp",
+        previewMobile: "/work/inform/demo-mobile.webp",
+      },
       slides: [],
       deck: [
         { src: "/work/inform/deck/01.webp", w: 1440, h: 2000 },

@@ -196,34 +196,34 @@ html.lenis body {
 }
 
 /* ⑤ 아이폰 17 목업 (화면 402 × 874pt 비율 · 모서리 55pt · 아일랜드 126 × 37pt)
-   폭 200 기준: 티타늄 테두리 2.5 + 검은 베젤 6.5 → 화면 182 × 396 */
+   폭 200 기준: 티타늄 테두리 2 + 검은 베젤 4 → 화면 188 × 402 */
 .phone-frame {
   position: absolute;
   top: 3px;
   left: 0;
   width: 200px;
   height: 414px;
-  border-radius: 34px;
+  border-radius: 31px;
   background: linear-gradient(140deg, #d4d6da 0%, #7b7e84 30%, #b8bbc0 55%, #5f6267 80%, #a4a7ac 100%);
   box-shadow: 0 22px 40px -20px rgb(0 0 0 / 0.45);
 }
 .phone-frame::before {
   content: "";
   position: absolute;
-  inset: 2.5px;
-  border-radius: 31.5px;
+  inset: 2px;
+  border-radius: 29px;
   background: #050506;
 }
 .phone-screen {
   position: absolute;
-  inset: 9px;
+  inset: 6px;
   overflow: hidden;
   border-radius: 25px;
   background: #fff;
 }
 .phone-island {
   position: absolute;
-  top: 14px;
+  top: 11px;
   left: 50%;
   width: 57px;
   height: 17px;
@@ -294,4 +294,34 @@ html.lenis body {
   margin-left: -46px;
   border-radius: 0 0 7px 7px;
   background: linear-gradient(#a4a7ac, #d3d5d8);
+}
+
+/* ④ 발표자료 크게 보기: 어두운 배경 + 가운데 큰 세로 스크롤 */
+.deck-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  animation: demo-fade 0.25s ease-out both;
+}
+.deck-sheet {
+  position: absolute;
+  top: 32px;
+  bottom: 32px;
+  left: 0;
+  right: 0;
+  margin-inline: auto;
+  width: min(1100px, calc(100vw - 160px));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--bg-page);
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+  animation: demo-pop 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+@media (max-width: 700px) {
+  .deck-sheet {
+    top: 72px;
+    bottom: 0;
+    width: 100vw;
+  }
 }
