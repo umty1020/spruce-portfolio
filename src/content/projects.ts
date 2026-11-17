@@ -130,10 +130,10 @@ export const projects: Project[] = [
         { src: "/work/inform/deck/13.webp", w: 1440, h: 609 },
       ],
       screens: [
-        { label: "온보딩 · 관심 분야 선택", device: "mobile", src: "/work/inform/onboarding.webp" },
-        { label: "월간 ↔ 주간 캘린더", device: "mobile", src: "/work/inform/home.webp" },
-        { label: "맞춤형 공지 태그 필터", device: "mobile", src: "/work/inform/filter.webp" },
-        { label: "마감 · 일정 알림", device: "mobile", src: "/work/inform/alert.webp" },
+        { label: "온보딩 · 관심 분야 선택", device: "mobile", src: "/work/inform/screen-onboarding.webp" },
+        { label: "월간 ↔ 주간 캘린더", device: "mobile", src: "/work/inform/screen-home.webp" },
+        { label: "맞춤형 공지 태그 필터", device: "mobile", src: "/work/inform/screen-filter.webp" },
+        { label: "마감 · 일정 알림", device: "mobile", src: "/work/inform/screen-alert.webp" },
         { label: "어드민 공지 무결성 · 중복 관리", device: "desktop", src: "/work/inform/admin-home.webp" },
       ],
       info: [

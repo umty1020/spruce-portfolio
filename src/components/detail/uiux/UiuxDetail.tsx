@@ -118,7 +118,7 @@ export default function UiuxDetail({ project }: { project: Project & { uiux: Det
                 y={y}
                 w={w}
                 h={h}
-                className={`border-2 border-border-strong bg-bg-panel ${screen.device === "mobile" ? "rounded-[28px]" : ""}`}
+                className={`bg-bg-panel ${screen.src ? "" : "border-2 border-border-strong"} ${screen.device === "mobile" ? "rounded-[28px]" : ""}`}
               >
                 {screen.src ? (
                   <Image src={screen.src} alt={screen.label} fill sizes={`${w}px`} className="object-cover object-top" />
