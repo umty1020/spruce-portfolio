@@ -5,6 +5,7 @@ import DetailTrack from "../DetailTrack";
 import { Box, InfoList, Label, Panel, Placeholder, TextBlock } from "../parts";
 import LiveDemo from "./LiveDemo";
 import LongDeck from "./LongDeck";
+import { LaptopFrame, PhoneFrame } from "./DeviceFrames";
 import SlideViewer from "./SlideViewer";
 
 // 상세 A · UI/UX (Figma 4:42) — 섹션 하나씩 넘김. 한 번 밀면 다음 섹션이 화면 가운데에 맞춰짐.
@@ -17,7 +18,8 @@ const SCREEN_GAP = 16;
 const DECK_W = 720;
 const DECK_H = 640;
 
-const screenSize = (device: "mobile" | "desktop") => (device === "mobile" ? [200, 420, 240] : [440, 280, 310]);
+// [폭, 높이, 위] — 모바일: 아이폰 17 비율 목업, 데스크톱: 맥북 목업 (화면 16:10.4)
+const screenSize = (device: "mobile" | "desktop") => (device === "mobile" ? [200, 420, 240] : [560, 336, 282]);
 
 export default function UiuxDetail({ project }: { project: Project & { uiux: Detail } }) {
   const d = project.uiux;
@@ -118,10 +120,16 @@ export default function UiuxDetail({ project }: { project: Project & { uiux: Det
                 y={y}
                 w={w}
                 h={h}
-                className={`bg-bg-panel ${screen.src ? "" : "border-2 border-border-strong"} ${screen.device === "mobile" ? "rounded-[28px]" : ""}`}
+                className={
+                  screen.src
+                    ? "overflow-visible"
+                    : `bg-bg-panel ${screen.src ? "" : "border-2 border-border-strong"} ${screen.device === "mobile" ? "rounded-[28px]" : ""}`
+                }
               >
-                {screen.src ? (
-                  <Image src={screen.src} alt={screen.label} fill sizes={`${w}px`} className="object-cover object-top" />
+                {screen.src && screen.device === "mobile" ? (
+                  <PhoneFrame src={screen.src} alt={screen.label} />
+                ) : screen.src ? (
+                  <LaptopFrame src={screen.src} alt={screen.label} />
                 ) : (
                   <Placeholder>{screen.device === "mobile" ? "모바일 화면" : "데스크톱 화면"}</Placeholder>
                 )}

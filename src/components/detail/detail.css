@@ -194,3 +194,104 @@ html.lenis body {
   scrollbar-width: thin;
   scrollbar-color: var(--border-strong) transparent;
 }
+
+/* ⑤ 아이폰 17 목업 (화면 402 × 874pt 비율 · 모서리 55pt · 아일랜드 126 × 37pt)
+   폭 200 기준: 티타늄 테두리 2.5 + 검은 베젤 6.5 → 화면 182 × 396 */
+.phone-frame {
+  position: absolute;
+  top: 3px;
+  left: 0;
+  width: 200px;
+  height: 414px;
+  border-radius: 34px;
+  background: linear-gradient(140deg, #d4d6da 0%, #7b7e84 30%, #b8bbc0 55%, #5f6267 80%, #a4a7ac 100%);
+  box-shadow: 0 22px 40px -20px rgb(0 0 0 / 0.45);
+}
+.phone-frame::before {
+  content: "";
+  position: absolute;
+  inset: 2.5px;
+  border-radius: 31.5px;
+  background: #050506;
+}
+.phone-screen {
+  position: absolute;
+  inset: 9px;
+  overflow: hidden;
+  border-radius: 25px;
+  background: #fff;
+}
+.phone-island {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  width: 57px;
+  height: 17px;
+  margin-left: -28.5px;
+  border-radius: 999px;
+  background: #000;
+}
+/* 옆 버튼: 왼쪽 액션 · 볼륨 2개, 오른쪽 전원 */
+.phone-btn {
+  position: absolute;
+  width: 2px;
+  background: linear-gradient(90deg, #6d7076, #b3b6bb);
+}
+.phone-btn.is-left {
+  left: -1.5px;
+  border-radius: 2px 0 0 2px;
+}
+.phone-btn.is-right {
+  right: -1.5px;
+  border-radius: 0 2px 2px 0;
+}
+
+/* ⑤ 맥북 목업: 알루미늄 테두리의 검은 화면 + 노치 + 아래 몸체 */
+.laptop-lid {
+  position: absolute;
+  top: 0;
+  left: 40px;
+  right: 40px;
+  height: 322px;
+  border-radius: 16px 16px 4px 4px;
+  background: #0a0a0b;
+  box-shadow: 0 0 0 1.5px #9a9da2;
+}
+.laptop-screen {
+  position: absolute;
+  inset: 10px 10px 14px;
+  overflow: hidden;
+  border-radius: 6px 6px 0 0;
+  background: #fff;
+}
+.laptop-notch {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  width: 58px;
+  height: 9px;
+  margin-left: -29px;
+  border-radius: 0 0 5px 5px;
+  background: #0a0a0b;
+}
+.laptop-base {
+  position: absolute;
+  top: 321px;
+  left: 0;
+  right: 0;
+  height: 14px;
+  border-radius: 2px 2px 14px 14px / 2px 2px 9px 9px;
+  background: linear-gradient(#eceef0, #c3c6ca 45%, #8f9297);
+  box-shadow: 0 20px 30px -18px rgb(0 0 0 / 0.5);
+}
+.laptop-base::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 92px;
+  height: 5px;
+  margin-left: -46px;
+  border-radius: 0 0 7px 7px;
+  background: linear-gradient(#a4a7ac, #d3d5d8);
+}
