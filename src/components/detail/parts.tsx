@@ -23,11 +23,13 @@ export function Label({ x, y = 200, dark, children }: { x: number; y?: number; c
   );
 }
 
-export function TextBlock({ x, y, title, body }: { x: number; y: number; title: string; body: string }) {
+/** 제목 + 본문. 본문의 줄바꿈(\n)은 문단으로. x·y를 주면 절대 위치, 안 주면 흐름 안에 놓임 */
+export function TextBlock({ x, y, title, body }: { x?: number; y?: number; title: string; body: string }) {
+  const placed = x !== undefined && y !== undefined;
   return (
-    <div className="absolute flex w-[300px] flex-col gap-[10px]" style={{ left: x, top: y }}>
+    <div className={`${placed ? "absolute" : ""} flex w-[300px] flex-col gap-[10px]`} style={placed ? { left: x, top: y } : undefined}>
       <p className="wf-title text-text-primary">{title}</p>
-      <p className="wf-body text-text-muted">{body}</p>
+      <p className="wf-body whitespace-pre-line text-text-muted">{body}</p>
     </div>
   );
 }

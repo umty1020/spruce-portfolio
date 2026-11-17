@@ -92,11 +92,42 @@ export const projects: Project[] = [
     no: "01",
     title: "DANG SQUARE",
     kind: "uiux",
-    summary: "[한 줄 소개]",
-    roles: "[역할]",
+    summary: "산책 매칭과 저탄소 에코 커머스를 결합한 반려동물 통합 플랫폼",
+    roles: "Product Design · Frontend",
     award: "인하대 넷제로 해커톤 · 장려상",
-    icon: { label: "환경 로고" },
-    uiux: uiuxPlaceholder("DANG SQUARE", "mobile"),
+    icon: { label: "환경 로고", src: "/work/dang-square/icon.webp" },
+    uiux: {
+      overview:
+        "국내 반려가구 1,500만 시대, 반려동물 양육 과정의 탄소 발자국 문제를 해결하기 위해 반려인의 일상 루틴(산책·소통·소비) 길목에 탄소 저감 시스템을 배치한 '반려생활 선순환 에코 루프' 통합 플랫폼.",
+      solutions:
+        "행동-소비-소통 에코 루프: 하루 51분 산책 매칭으로 가구당 0.5kWh의 액티브 전력을 절감(대기전력 절감량의 4.2배)하고, 이를 NZ마켓 친환경 소비와 자원순환 중고거래로 직결.\n저전력 클라우드 인프라: Haversine 메모리 연산, S3 Presigned 직접 업로드, 경량 LLM(Amazon Bedrock Nova Lite) 캐싱으로 AI 호출 에너지를 90% 감축.",
+      hero: "/work/dang-square/hero.webp",
+      problem:
+        "파편화된 반려생활 스키마와 명확한 탄소 감축 인센티브가 없어, 자발적인 친환경 실천이 오래 이어지지 않는다.\n실시간 GPS 공유와 이미지·AI 추천 처리에서 생기는 고전력 서버 트래픽이 저탄소 서비스의 본질과 부딪힌다.",
+      demo: { url: "https://dang-square.vercel.app", device: "mobile", previewMobile: "/work/dang-square/screen-splash.webp" },
+      slides: ["/work/dang-square/slides/01.webp", "/work/dang-square/slides/02.webp", "/work/dang-square/slides/03.webp", "/work/dang-square/slides/04.webp", "/work/dang-square/slides/05.webp", "/work/dang-square/slides/06.webp", "/work/dang-square/slides/07.webp", "/work/dang-square/slides/08.webp", "/work/dang-square/slides/09.webp"],
+      screens: [
+        { label: "실시간 위치 기반 산책 매칭", device: "mobile", src: "/work/dang-square/phone-walk.webp" },
+        { label: "저탄소 NZ마켓", device: "mobile", src: "/work/dang-square/phone-market.webp" },
+        { label: "자원순환 중고거래", device: "mobile", src: "/work/dang-square/phone-secondhand.webp" },
+        { label: "동네 커뮤니티", device: "mobile", src: "/work/dang-square/phone-community.webp" },
+        { label: "마이페이지 · 산책 기록", device: "mobile", src: "/work/dang-square/phone-mypage.webp" },
+      ],
+      info: [
+        { label: "기간", lines: ["2026.11", "인하대학교 Net-Zero 해커톤"] },
+        { label: "팀", lines: ["4인 팀 (기획·디자인·프론트엔드 전담)"] },
+        { label: "역할", lines: ["Product Designer & Frontend Developer"] },
+        {
+          label: "핵심 기능",
+          lines: [
+            "산책 매칭: 반경 내 동네 반려견 친구 탐색, 산책 트래킹으로 실내 대기전력 감축 유도",
+            "NZ마켓·중고거래: 친환경 인증 용품 큐레이션, 경량 LLM 판매글 초안 자동 생성",
+            "탄소 대시보드·커뮤니티: 전력 배출계수 0.4173 kg CO2eq/kWh 기반 절감량 시각화, 산책왕 챌린지",
+          ],
+        },
+      ],
+      result: "인하대학교 Net-Zero 해커톤 장려상 수상, 실제 서비스 배포 (dang-square.vercel.app).",
+    },
   },
   {
     slug: "inform",

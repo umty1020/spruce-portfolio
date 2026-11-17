@@ -47,8 +47,11 @@ export default function UiuxDetail({ project }: { project: Project & { uiux: Det
       {/* ① 개요 */}
       <Panel {...section(0)}>
         <Label x={PAD}>① 개요</Label>
-        <TextBlock x={PAD} y={300} title={project.title} body={d.overview} />
-        <TextBlock x={PAD} y={480} title="SOLUTIONS" body={d.solutions} />
+        {/* 글이 길어져도 겹치지 않게 한 열로 쌓고, 대표 이미지(위 240 · 높이 420)의 세로 가운데에 맞춤 */}
+        <div className="absolute flex h-[420px] flex-col justify-center gap-[32px]" style={{ left: PAD, top: 240 }}>
+          <TextBlock title={project.title} body={d.overview} />
+          <TextBlock title="SOLUTIONS" body={d.solutions} />
+        </div>
         <Box x={PAD + 348} y={240} w={760} h={420} className="bg-bg-panel-strong">
           {d.hero ? (
             <Image src={d.hero} alt="" fill sizes="760px" className="object-cover" priority />
@@ -66,7 +69,9 @@ export default function UiuxDetail({ project }: { project: Project & { uiux: Det
       {/* ② 문제 */}
       <Panel {...section(1)}>
         <Label x={PAD}>② 문제</Label>
-        <TextBlock x={PAD} y={380} title="문제" body={d.problem} />
+        <div className="absolute flex h-[420px] flex-col justify-center" style={{ left: PAD, top: 240 }}>
+          <TextBlock title="문제" body={d.problem} />
+        </div>
         <Box x={PAD + 360} y={240} w={560} h={420} className="border border-border-default bg-bg-panel">
           {d.problemImage ? (
             <Image src={d.problemImage} alt="" fill sizes="560px" className="object-cover" />
